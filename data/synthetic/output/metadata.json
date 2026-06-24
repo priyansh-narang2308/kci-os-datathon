@@ -1,0 +1,13 @@
+{
+  "generated_at": "2026-06-24T19:01:39.871Z",
+  "firs": 500,
+  "entities": {
+    "accused": 25,
+    "victims": 15,
+    "locations": 20,
+    "phones": 20,
+    "vehicles": 10,
+    "police_stations": 15
+  },
+  "total_edges": 1715
+}

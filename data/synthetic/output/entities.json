@@ -1,0 +1,1112 @@
+{
+  "accused": [
+    {
+      "accused_id": "ACC_001",
+      "name": "Ravi Kumar",
+      "aliases": [
+        "Ravi K",
+        "R. Kumar",
+        "ರವಿ ಕುಮಾರ್"
+      ],
+      "age": 55,
+      "gender": "male",
+      "address": "186, 1st Main, Mysuru",
+      "district": "Mysuru",
+      "prior_conviction_count": 0,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "accused_id": "ACC_002",
+      "name": "Suresh Babu",
+      "aliases": [
+        "Suresh B",
+        "S. Babu",
+        "ಸುರೇಶ್ ಬಾಬು"
+      ],
+      "age": 53,
+      "gender": "male",
+      "address": "39, 2nd Stage, Bengaluru Urban",
+      "district": "Bengaluru Urban",
+      "prior_conviction_count": 3,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "accused_id": "ACC_003",
+      "name": "Mustafa Khan",
+      "aliases": [
+        "Mustafa K",
+        "M. Khan",
+        "ಮುಸ್ತಾಫಾ"
+      ],
+      "age": 34,
+      "gender": "male",
+      "address": "111, 1st Main, Mangaluru",
+      "district": "Mangaluru",
+      "prior_conviction_count": 1,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "accused_id": "ACC_004",
+      "name": "Anil Sharma",
+      "aliases": [
+        "Anil S",
+        "ಅನಿಲ್"
+      ],
+      "age": 31,
+      "gender": "male",
+      "address": "140, 2nd Stage, Hubli-Dharwad",
+      "district": "Hubli-Dharwad",
+      "prior_conviction_count": 1,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "accused_id": "ACC_005",
+      "name": "Rajesh Reddy",
+      "aliases": [
+        "Rajesh R",
+        "ರಾಜೇಶ್"
+      ],
+      "age": 53,
+      "gender": "male",
+      "address": "91, Colony, Kalaburagi",
+      "district": "Kalaburagi",
+      "prior_conviction_count": 0,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "accused_id": "ACC_006",
+      "name": "Darshan Raj",
+      "aliases": [
+        "Darshan R",
+        "ದರ್ಶನ್"
+      ],
+      "age": 39,
+      "gender": "male",
+      "address": "33, Main Road, Bengaluru Urban",
+      "district": "Bengaluru Urban",
+      "prior_conviction_count": 2,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "accused_id": "ACC_007",
+      "name": "Vijay Patel",
+      "aliases": [
+        "Vijay P",
+        "ವಿಜಯ್"
+      ],
+      "age": 32,
+      "gender": "male",
+      "address": "133, Main Road, Belagavi",
+      "district": "Belagavi",
+      "prior_conviction_count": 0,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "accused_id": "ACC_008",
+      "name": "Imran Sheikh",
+      "aliases": [
+        "Imran S",
+        "ಇಮ್ರಾನ್"
+      ],
+      "age": 38,
+      "gender": "male",
+      "address": "147, 2nd Stage, Mysuru",
+      "district": "Mysuru",
+      "prior_conviction_count": 3,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "accused_id": "ACC_009",
+      "name": "Kiran Gowda",
+      "aliases": [
+        "Kiran G",
+        "ಕಿರಣ್"
+      ],
+      "age": 55,
+      "gender": "male",
+      "address": "17, 1st Main, Mangaluru",
+      "district": "Mangaluru",
+      "prior_conviction_count": 1,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "accused_id": "ACC_010",
+      "name": "Prakash Naik",
+      "aliases": [
+        "Prakash N",
+        "ಪ್ರಕಾಶ್"
+      ],
+      "age": 21,
+      "gender": "male",
+      "address": "77, Colony, Hubli-Dharwad",
+      "district": "Hubli-Dharwad",
+      "prior_conviction_count": 0,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "accused_id": "ACC_011",
+      "name": "Sunil Verma",
+      "aliases": [
+        "Sunil V",
+        "ಸುನಿಲ್"
+      ],
+      "age": 55,
+      "gender": "male",
+      "address": "97, 1st Main, Bengaluru Urban",
+      "district": "Bengaluru Urban",
+      "prior_conviction_count": 2,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "accused_id": "ACC_012",
+      "name": "Farhan Ahmed",
+      "aliases": [
+        "Farhan A",
+        "ಫರ್ಹಾನ್"
+      ],
+      "age": 48,
+      "gender": "male",
+      "address": "54, 2nd Stage, Kalaburagi",
+      "district": "Kalaburagi",
+      "prior_conviction_count": 1,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "accused_id": "ACC_013",
+      "name": "Deepak Singh",
+      "aliases": [
+        "Deepak S",
+        "ದೀಪಕ್"
+      ],
+      "age": 19,
+      "gender": "male",
+      "address": "159, Main Road, Belagavi",
+      "district": "Belagavi",
+      "prior_conviction_count": 1,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "accused_id": "ACC_014",
+      "name": "Naveen Kumar",
+      "aliases": [
+        "Naveen K",
+        "ನವೀನ್"
+      ],
+      "age": 36,
+      "gender": "male",
+      "address": "63, Main Road, Mysuru",
+      "district": "Mysuru",
+      "prior_conviction_count": 0,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "accused_id": "ACC_015",
+      "name": "Asif Pasha",
+      "aliases": [
+        "Asif P",
+        "ಅಸಿಫ್"
+      ],
+      "age": 53,
+      "gender": "male",
+      "address": "77, 2nd Stage, Bengaluru Urban",
+      "district": "Bengaluru Urban",
+      "prior_conviction_count": 5,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "accused_id": "ACC_016",
+      "name": "Manoj Tiwari",
+      "aliases": [
+        "Manoj T",
+        "ಮನೋಜ್"
+      ],
+      "age": 41,
+      "gender": "male",
+      "address": "117, 2nd Stage, Hubli-Dharwad",
+      "district": "Hubli-Dharwad",
+      "prior_conviction_count": 2,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "accused_id": "ACC_017",
+      "name": "Hassan Ali",
+      "aliases": [
+        "Hassan A",
+        "ಹಸನ್"
+      ],
+      "age": 37,
+      "gender": "male",
+      "address": "48, 1st Main, Mangaluru",
+      "district": "Mangaluru",
+      "prior_conviction_count": 0,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "accused_id": "ACC_018",
+      "name": "Rahul Dev",
+      "aliases": [
+        "Rahul D",
+        "ರಾಹುಲ್"
+      ],
+      "age": 22,
+      "gender": "male",
+      "address": "20, Cross Street, Bengaluru Urban",
+      "district": "Bengaluru Urban",
+      "prior_conviction_count": 0,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "accused_id": "ACC_019",
+      "name": "Irfan Khan",
+      "aliases": [
+        "Irfan K",
+        "ಇರ್ಫಾನ್"
+      ],
+      "age": 37,
+      "gender": "male",
+      "address": "127, 2nd Stage, Kalaburagi",
+      "district": "Kalaburagi",
+      "prior_conviction_count": 2,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "accused_id": "ACC_020",
+      "name": "Vikram Joshi",
+      "aliases": [
+        "Vikram J",
+        "ವಿಕ್ರಮ್"
+      ],
+      "age": 47,
+      "gender": "male",
+      "address": "115, 1st Main, Belagavi",
+      "district": "Belagavi",
+      "prior_conviction_count": 0,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "accused_id": "ACC_021",
+      "name": "Shafiulla Baig",
+      "aliases": [
+        "Shafiulla B",
+        "ಶಫಿउಲ್ಲಾ"
+      ],
+      "age": 39,
+      "gender": "male",
+      "address": "88, Main Road, Mysuru",
+      "district": "Mysuru",
+      "prior_conviction_count": 1,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "accused_id": "ACC_022",
+      "name": "Ganesh Hedge",
+      "aliases": [
+        "Ganesh H",
+        "ಗಣೇಶ್"
+      ],
+      "age": 31,
+      "gender": "male",
+      "address": "181, Colony, Mangaluru",
+      "district": "Mangaluru",
+      "prior_conviction_count": 0,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "accused_id": "ACC_023",
+      "name": "Yusuf Mirza",
+      "aliases": [
+        "Yusuf M",
+        "ಯೂಸುಫ್"
+      ],
+      "age": 54,
+      "gender": "male",
+      "address": "22, Cross Street, Bengaluru Urban",
+      "district": "Bengaluru Urban",
+      "prior_conviction_count": 0,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "accused_id": "ACC_024",
+      "name": "Ravi Shankar",
+      "aliases": [
+        "Ravi S",
+        "ರವಿ ಶಂಕರ್"
+      ],
+      "age": 44,
+      "gender": "male",
+      "address": "79, Colony, Hubli-Dharwad",
+      "district": "Hubli-Dharwad",
+      "prior_conviction_count": 2,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "accused_id": "ACC_025",
+      "name": "Afzal Khan",
+      "aliases": [
+        "Afzal K",
+        "ಅಫ್ಜಲ್"
+      ],
+      "age": 53,
+      "gender": "male",
+      "address": "77, Colony, Kalaburagi",
+      "district": "Kalaburagi",
+      "prior_conviction_count": 0,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    }
+  ],
+  "victims": [
+    {
+      "victim_id": "VIC_001",
+      "name": "Lakshmi Devi",
+      "age": 65,
+      "gender": "female",
+      "address": "12, Cross Street, Mysuru",
+      "district": "Mysuru",
+      "vulnerability_flag": true,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "victim_id": "VIC_002",
+      "name": "Rajesh Kumar",
+      "age": 45,
+      "gender": "male",
+      "address": "98, Main Road, Bengaluru Urban",
+      "district": "Bengaluru Urban",
+      "vulnerability_flag": false,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "victim_id": "VIC_003",
+      "name": "Ayesha Begum",
+      "age": 34,
+      "gender": "female",
+      "address": "95, Cross Street, Mangaluru",
+      "district": "Mangaluru",
+      "vulnerability_flag": false,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "victim_id": "VIC_004",
+      "name": "Suresh Babu",
+      "age": 52,
+      "gender": "male",
+      "address": "41, 1st Main, Hubli-Dharwad",
+      "district": "Hubli-Dharwad",
+      "vulnerability_flag": false,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "victim_id": "VIC_005",
+      "name": "Priya Sharma",
+      "age": 28,
+      "gender": "female",
+      "address": "18, 1st Main, Bengaluru Urban",
+      "district": "Bengaluru Urban",
+      "vulnerability_flag": false,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "victim_id": "VIC_006",
+      "name": "Mohammed Irfan",
+      "age": 40,
+      "gender": "male",
+      "address": "20, Main Road, Kalaburagi",
+      "district": "Kalaburagi",
+      "vulnerability_flag": false,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "victim_id": "VIC_007",
+      "name": "Geetha",
+      "age": 70,
+      "gender": "female",
+      "address": "73, Main Road, Mysuru",
+      "district": "Mysuru",
+      "vulnerability_flag": true,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "victim_id": "VIC_008",
+      "name": "Venkatesh",
+      "age": 55,
+      "gender": "male",
+      "address": "11, Cross Street, Belagavi",
+      "district": "Belagavi",
+      "vulnerability_flag": false,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "victim_id": "VIC_009",
+      "name": "Suma",
+      "age": 38,
+      "gender": "female",
+      "address": "73, Cross Street, Hubli-Dharwad",
+      "district": "Hubli-Dharwad",
+      "vulnerability_flag": false,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "victim_id": "VIC_010",
+      "name": "Nagaraj",
+      "age": 60,
+      "gender": "male",
+      "address": "14, Cross Street, Mangaluru",
+      "district": "Mangaluru",
+      "vulnerability_flag": true,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "victim_id": "VIC_011",
+      "name": "Fathima",
+      "age": 42,
+      "gender": "female",
+      "address": "49, Cross Street, Kalaburagi",
+      "district": "Kalaburagi",
+      "vulnerability_flag": false,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "victim_id": "VIC_012",
+      "name": "Srinivas",
+      "age": 48,
+      "gender": "male",
+      "address": "30, 1st Main, Bengaluru Urban",
+      "district": "Bengaluru Urban",
+      "vulnerability_flag": false,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "victim_id": "VIC_013",
+      "name": "Kamala",
+      "age": 68,
+      "gender": "female",
+      "address": "94, Main Road, Mysuru",
+      "district": "Mysuru",
+      "vulnerability_flag": true,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "victim_id": "VIC_014",
+      "name": "Ramesh",
+      "age": 35,
+      "gender": "male",
+      "address": "94, Cross Street, Belagavi",
+      "district": "Belagavi",
+      "vulnerability_flag": false,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "victim_id": "VIC_015",
+      "name": "Zareena",
+      "age": 30,
+      "gender": "female",
+      "address": "97, Cross Street, Mangaluru",
+      "district": "Mangaluru",
+      "vulnerability_flag": false,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    }
+  ],
+  "locations": [
+    {
+      "location_id": "LOC_001",
+      "lat": 12.303168515281616,
+      "long": 76.6502872824592,
+      "type": "commercial",
+      "name": "Mysuru Central Market",
+      "taluk": "Mysuru Taluk",
+      "district": "Mysuru",
+      "state": "Karnataka",
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "location_id": "LOC_002",
+      "lat": 12.304169680761653,
+      "long": 76.65868323061476,
+      "type": "commercial",
+      "name": "Mysuru Palace Road",
+      "taluk": "Mysuru Taluk",
+      "district": "Mysuru",
+      "state": "Karnataka",
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "location_id": "LOC_003",
+      "lat": 12.311268060372063,
+      "long": 76.65593504032687,
+      "type": "residence",
+      "name": "Devaraja Mohalla",
+      "taluk": "Mysuru Taluk",
+      "district": "Mysuru",
+      "state": "Karnataka",
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "location_id": "LOC_004",
+      "lat": 12.315230260207995,
+      "long": 76.65741922400854,
+      "type": "commercial",
+      "name": "Krishna Rajendra Market",
+      "taluk": "Mysuru Taluk",
+      "district": "Mysuru",
+      "state": "Karnataka",
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "location_id": "LOC_005",
+      "lat": 12.320102750433122,
+      "long": 76.64972463884949,
+      "type": "residence",
+      "name": "Vani Vilas Mohalla",
+      "taluk": "Mysuru Taluk",
+      "district": "Mysuru",
+      "state": "Karnataka",
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "location_id": "LOC_006",
+      "lat": 12.316365081822047,
+      "long": 76.64133958847053,
+      "type": "commercial",
+      "name": "Mall of Mysuru",
+      "taluk": "Mysuru Taluk",
+      "district": "Mysuru",
+      "state": "Karnataka",
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "location_id": "LOC_007",
+      "lat": 12.370673428104798,
+      "long": 76.64017997538357,
+      "type": "commercial",
+      "name": "KRS Road",
+      "taluk": "Krishnarajanagara",
+      "district": "Mysuru",
+      "state": "Karnataka",
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "location_id": "LOC_008",
+      "lat": 12.97933435557754,
+      "long": 77.60603599525315,
+      "type": "commercial",
+      "name": "Bengaluru MG Road",
+      "taluk": "Bangalore South",
+      "district": "Bengaluru Urban",
+      "state": "Karnataka",
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "location_id": "LOC_009",
+      "lat": 12.931957840530002,
+      "long": 77.62370271777799,
+      "type": "residence",
+      "name": "Koramangala",
+      "taluk": "Bangalore South",
+      "district": "Bengaluru Urban",
+      "state": "Karnataka",
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "location_id": "LOC_010",
+      "lat": 12.967906979174172,
+      "long": 77.74875504287073,
+      "type": "residence",
+      "name": "Whitefield",
+      "taluk": "Bangalore East",
+      "district": "Bengaluru Urban",
+      "state": "Karnataka",
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "location_id": "LOC_011",
+      "lat": 12.915781306085709,
+      "long": 77.64112463274303,
+      "type": "residence",
+      "name": "HSR Layout",
+      "taluk": "Bangalore South",
+      "district": "Bengaluru Urban",
+      "state": "Karnataka",
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "location_id": "LOC_012",
+      "lat": 12.977436847598291,
+      "long": 77.64578456493133,
+      "type": "residence",
+      "name": "Indiranagar",
+      "taluk": "Bangalore East",
+      "district": "Bengaluru Urban",
+      "state": "Karnataka",
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "location_id": "LOC_013",
+      "lat": 12.985632439563432,
+      "long": 77.61003017980899,
+      "type": "commercial",
+      "name": "Commercial Street",
+      "taluk": "Bangalore North",
+      "district": "Bengaluru Urban",
+      "state": "Karnataka",
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "location_id": "LOC_014",
+      "lat": 15.364025459352487,
+      "long": 75.12104233734809,
+      "type": "commercial",
+      "name": "Hubli DCC Circle",
+      "taluk": "Hubli",
+      "district": "Hubli-Dharwad",
+      "state": "Karnataka",
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "location_id": "LOC_015",
+      "lat": 15.457217627972533,
+      "long": 75.0058763401762,
+      "type": "commercial",
+      "name": "Dharwad Jubilee Circle",
+      "taluk": "Dharwad",
+      "district": "Hubli-Dharwad",
+      "state": "Karnataka",
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "location_id": "LOC_016",
+      "lat": 12.914069729655838,
+      "long": 74.85296494581043,
+      "type": "commercial",
+      "name": "Mangaluru City Centre",
+      "taluk": "Mangaluru",
+      "district": "Mangaluru",
+      "state": "Karnataka",
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "location_id": "LOC_017",
+      "lat": 12.87819153667536,
+      "long": 74.84385119351566,
+      "type": "commercial",
+      "name": "Hampankatta",
+      "taluk": "Mangaluru",
+      "district": "Mangaluru",
+      "state": "Karnataka",
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "location_id": "LOC_018",
+      "lat": 17.33379746668989,
+      "long": 76.83502654434787,
+      "type": "commercial",
+      "name": "Kalaburagi Fort Road",
+      "taluk": "Kalaburagi",
+      "district": "Kalaburagi",
+      "state": "Karnataka",
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "location_id": "LOC_019",
+      "lat": 15.848230208022057,
+      "long": 74.49611170385276,
+      "type": "commercial",
+      "name": "Belagavi Camp",
+      "taluk": "Belagavi",
+      "district": "Belagavi",
+      "state": "Karnataka",
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "location_id": "LOC_020",
+      "lat": 15.853425485395729,
+      "long": 74.51185430463869,
+      "type": "residence",
+      "name": "Tilakwadi",
+      "taluk": "Belagavi",
+      "district": "Belagavi",
+      "state": "Karnataka",
+      "created_at": "2026-06-24T19:01:39.869Z"
+    }
+  ],
+  "phones": [
+    {
+      "phone_id": "PHONE_001",
+      "imei": "893446232284",
+      "msisdn": "+918608301913",
+      "registration_name": "Ravi Kumar",
+      "owner_confidence": 0.9299564435641396,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "phone_id": "PHONE_002",
+      "imei": "898261865267",
+      "msisdn": "+917168179972",
+      "registration_name": "Suresh Babu",
+      "owner_confidence": 0.8904831763187757,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "phone_id": "PHONE_003",
+      "imei": "893367728069",
+      "msisdn": "+917917706374",
+      "registration_name": "Mustafa Khan",
+      "owner_confidence": 0.8531117340673136,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "phone_id": "PHONE_004",
+      "imei": "892805548571",
+      "msisdn": "+917920515966",
+      "registration_name": "Anil Sharma",
+      "owner_confidence": 0.9044195195232665,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "phone_id": "PHONE_005",
+      "imei": "894430480002",
+      "msisdn": "+917028494779",
+      "registration_name": "Rajesh Reddy",
+      "owner_confidence": 0.9829161298090399,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "phone_id": "PHONE_006",
+      "imei": "892470256401",
+      "msisdn": "+919958330575",
+      "registration_name": "Darshan Raj",
+      "owner_confidence": 0.9279300492641889,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "phone_id": "PHONE_007",
+      "imei": "893136106873",
+      "msisdn": "+918628919945",
+      "registration_name": "Vijay Patel",
+      "owner_confidence": 0.9637538370178335,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "phone_id": "PHONE_008",
+      "imei": "896890943237",
+      "msisdn": "+917391236682",
+      "registration_name": "Imran Sheikh",
+      "owner_confidence": 0.9519256040556427,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "phone_id": "PHONE_009",
+      "imei": "895058474019",
+      "msisdn": "+919344489431",
+      "registration_name": "Kiran Gowda",
+      "owner_confidence": 0.9430815388248285,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "phone_id": "PHONE_010",
+      "imei": "895217038535",
+      "msisdn": "+917475175711",
+      "registration_name": "Prakash Naik",
+      "owner_confidence": 0.937337332648437,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "phone_id": "PHONE_011",
+      "imei": "893165306982",
+      "msisdn": "+919309724144",
+      "registration_name": "Sunil Verma",
+      "owner_confidence": 0.9321388697237207,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "phone_id": "PHONE_012",
+      "imei": "895728452856",
+      "msisdn": "+919699156872",
+      "registration_name": "Farhan Ahmed",
+      "owner_confidence": 0.9062573577138622,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "phone_id": "PHONE_013",
+      "imei": "892502752974",
+      "msisdn": "+918107983197",
+      "registration_name": "Deepak Singh",
+      "owner_confidence": 0.8866349844261083,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "phone_id": "PHONE_014",
+      "imei": "897496142650",
+      "msisdn": "+919288215450",
+      "registration_name": "Naveen Kumar",
+      "owner_confidence": 0.8718167749055988,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "phone_id": "PHONE_015",
+      "imei": "899933141672",
+      "msisdn": "+918923366880",
+      "registration_name": "Asif Pasha",
+      "owner_confidence": 0.995736197593095,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "phone_id": "PHONE_016",
+      "imei": "898156433596",
+      "msisdn": "+918843645316",
+      "registration_name": "Manoj Tiwari",
+      "owner_confidence": 0.9927892061555484,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "phone_id": "PHONE_017",
+      "imei": "897841784740",
+      "msisdn": "+918398222383",
+      "registration_name": "Hassan Ali",
+      "owner_confidence": 0.9708703834509439,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "phone_id": "PHONE_018",
+      "imei": "898895049333",
+      "msisdn": "+919159814901",
+      "registration_name": "Rahul Dev",
+      "owner_confidence": 0.9543242972309969,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "phone_id": "PHONE_019",
+      "imei": "896363358826",
+      "msisdn": "+917940237083",
+      "registration_name": "Irfan Khan",
+      "owner_confidence": 0.8917444926328182,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "phone_id": "PHONE_020",
+      "imei": "892478672739",
+      "msisdn": "+919995160051",
+      "registration_name": "Vikram Joshi",
+      "owner_confidence": 0.8606352252240179,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    }
+  ],
+  "vehicles": [
+    {
+      "vehicle_id": "VEH_001",
+      "reg_no": "KA-86-ZI-8880",
+      "type": "motorcycle",
+      "color": "silver",
+      "owner_name": null,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "vehicle_id": "VEH_002",
+      "reg_no": "KA-98-ZX-6524",
+      "type": "motorcycle",
+      "color": "black",
+      "owner_name": null,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "vehicle_id": "VEH_003",
+      "reg_no": "KA-60-BQ-7986",
+      "type": "motorcycle",
+      "color": "black",
+      "owner_name": null,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "vehicle_id": "VEH_004",
+      "reg_no": "KA-92-IA-6561",
+      "type": "auto_rickshaw",
+      "color": "white",
+      "owner_name": null,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "vehicle_id": "VEH_005",
+      "reg_no": "KA-86-VZ-2279",
+      "type": "motorcycle",
+      "color": "black",
+      "owner_name": null,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "vehicle_id": "VEH_006",
+      "reg_no": "KA-34-UG-1963",
+      "type": "motorcycle",
+      "color": "silver",
+      "owner_name": null,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "vehicle_id": "VEH_007",
+      "reg_no": "KA-71-OB-5391",
+      "type": "motorcycle",
+      "color": "black",
+      "owner_name": null,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "vehicle_id": "VEH_008",
+      "reg_no": "KA-35-EL-6905",
+      "type": "car",
+      "color": "silver",
+      "owner_name": null,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "vehicle_id": "VEH_009",
+      "reg_no": "KA-30-YY-8440",
+      "type": "motorcycle",
+      "color": "black",
+      "owner_name": null,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "vehicle_id": "VEH_010",
+      "reg_no": "KA-27-HU-7982",
+      "type": "auto_rickshaw",
+      "color": "black",
+      "owner_name": null,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    }
+  ],
+  "police_stations": [
+    {
+      "ps_id": "PS_MSR_001",
+      "name": "Lakshmipuram PS",
+      "district": "Mysuru",
+      "taluk": "Mysuru Taluk",
+      "lat": 13.37410626707354,
+      "long": 75.01220050845835,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "ps_id": "PS_MSR_002",
+      "name": "Vani Vilas Mohalla PS",
+      "district": "Mysuru",
+      "taluk": "Mysuru Taluk",
+      "lat": 15.808953021171359,
+      "long": 76.92666797242865,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "ps_id": "PS_MSR_003",
+      "name": "Devaraja Mohalla PS",
+      "district": "Mysuru",
+      "taluk": "Mysuru Taluk",
+      "lat": 14.66033708253586,
+      "long": 76.67381406493504,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "ps_id": "PS_BLR_001",
+      "name": "Koramangala PS",
+      "district": "Bengaluru Urban",
+      "taluk": "Bangalore South",
+      "lat": 16.415636979573836,
+      "long": 75.96928032867761,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "ps_id": "PS_BLR_002",
+      "name": "HSR Layout PS",
+      "district": "Bengaluru Urban",
+      "taluk": "Bangalore South",
+      "lat": 13.73174635200335,
+      "long": 75.69467331020752,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "ps_id": "PS_BLR_003",
+      "name": "Whitefield PS",
+      "district": "Bengaluru Urban",
+      "taluk": "Bangalore South",
+      "lat": 14.61081561410427,
+      "long": 77.38170419216702,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "ps_id": "PS_BLR_004",
+      "name": "Indiranagar PS",
+      "district": "Bengaluru Urban",
+      "taluk": "Bangalore South",
+      "lat": 16.1343108220793,
+      "long": 77.02777492738015,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "ps_id": "PS_BLR_005",
+      "name": "Commercial Street PS",
+      "district": "Bengaluru Urban",
+      "taluk": "Bangalore South",
+      "lat": 16.3146832106454,
+      "long": 75.0197433692022,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "ps_id": "PS_HUB_001",
+      "name": "DCC Circle PS",
+      "district": "Hubli-Dharwad",
+      "taluk": "Hubli",
+      "lat": 15.261622951938403,
+      "long": 75.14540383995906,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "ps_id": "PS_HUB_002",
+      "name": "Jubilee Circle PS",
+      "district": "Hubli-Dharwad",
+      "taluk": "Hubli",
+      "lat": 14.941037130960098,
+      "long": 75.94413538046072,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "ps_id": "PS_MNG_001",
+      "name": "City Centre PS",
+      "district": "Mangaluru",
+      "taluk": "Mangaluru",
+      "lat": 13.638789553700015,
+      "long": 77.72849557043344,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "ps_id": "PS_MNG_002",
+      "name": "Hampankatta PS",
+      "district": "Mangaluru",
+      "taluk": "Mangaluru",
+      "lat": 16.69873971178339,
+      "long": 75.91935679173099,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "ps_id": "PS_KLB_001",
+      "name": "Fort Road PS",
+      "district": "Kalaburagi",
+      "taluk": "Kalaburagi",
+      "lat": 16.278007600754773,
+      "long": 76.20607779267543,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "ps_id": "PS_BLG_001",
+      "name": "Camp PS",
+      "district": "Belagavi",
+      "taluk": "Belagavi",
+      "lat": 14.812686237506984,
+      "long": 77.48013882962445,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    },
+    {
+      "ps_id": "PS_BLG_002",
+      "name": "Tilakwadi PS",
+      "district": "Belagavi",
+      "taluk": "Belagavi",
+      "lat": 14.65048439540653,
+      "long": 77.0709829597487,
+      "created_at": "2026-06-24T19:01:39.869Z"
+    }
+  ]
+}
