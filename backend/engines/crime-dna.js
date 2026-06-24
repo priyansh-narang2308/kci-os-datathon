@@ -347,10 +347,253 @@ class MOSimilaritySearch {
   }
 }
 
+// ============================================================
+// Task 5.4 — Pattern Detection Engine
+// ============================================================
+
+class PatternDetector {
+  constructor(searcher) {
+    this.searcher = searcher;
+    this.PATTERN_THRESHOLD = 0.65;
+    this.MIN_CLUSTER_SIZE = 3;
+    this.CLUSTER_RADIUS_KM = 5;
+  }
+
+  async detectPatterns(firNo, options = {}) {
+    const threshold = options.threshold || this.PATTERN_THRESHOLD;
+    const minCluster = options.minCluster || this.MIN_CLUSTER_SIZE;
+
+    const similar = await this.searcher.search(firNo, {
+      topK: 20,
+      applyTimeDecay: false,
+    });
+
+    const highMatch = similar.filter(r => r.score >= threshold);
+    if (highMatch.length < minCluster) {
+      return { pattern_detected: false, matches: highMatch };
+    }
+
+    const clusters = this.clusterByGeography(highMatch);
+    const detectedClusters = clusters.filter(c => c.members.length >= minCluster);
+
+    return {
+      pattern_detected: detectedClusters.length > 0,
+      matches: highMatch,
+      clusters: detectedClusters.map(c => ({
+        center_lat: c.center.lat,
+        center_long: c.center.long,
+        radius_km: c.radius,
+        members: c.members,
+        size: c.members.length,
+      })),
+    };
+  }
+
+  async detectNewFIRPattern(fir, options = {}) {
+    const threshold = options.threshold || this.PATTERN_THRESHOLD;
+    const minCluster = options.minCluster || this.MIN_CLUSTER_SIZE;
+
+    const similar = await this.searcher.searchNewFIR(fir, {
+      topK: 20,
+      applyTimeDecay: false,
+    });
+
+    const highMatch = similar.filter(r => r.score >= threshold);
+    if (highMatch.length < minCluster) {
+      return { pattern_detected: false, matches: highMatch };
+    }
+
+    const clusters = this.clusterByGeography(highMatch);
+    const detectedClusters = clusters.filter(c => c.members.length >= minCluster);
+
+    return {
+      pattern_detected: detectedClusters.length > 0,
+      matches: highMatch,
+      clusters: detectedClusters.map(c => ({
+        center_lat: c.center.lat,
+        center_long: c.center.long,
+        radius_km: c.radius,
+        members: c.members,
+        size: c.members.length,
+      })),
+    };
+  }
+
+  clusterByGeography(results) {
+    const clusters = [];
+
+    for (const r of results) {
+      let added = false;
+      for (const cluster of clusters) {
+        const dist = this.haversine(
+          cluster.center.lat, cluster.center.long,
+          parseFloat(r.lat || 0), parseFloat(r.long || r.lat || 0)
+        );
+        if (dist <= this.CLUSTER_RADIUS_KM) {
+          cluster.members.push(r);
+          cluster.center.lat = cluster.members.reduce((s, m) => s + parseFloat(m.lat || 0), 0) / cluster.members.length;
+          cluster.center.long = cluster.members.reduce((s, m) => s + parseFloat(m.long || 0), 0) / cluster.members.length;
+          added = true;
+          break;
+        }
+      }
+      if (!added) {
+        clusters.push({
+          center: {
+            lat: parseFloat(r.lat || 0),
+            long: parseFloat(r.long || 0),
+          },
+          radius: this.CLUSTER_RADIUS_KM,
+          members: [r],
+        });
+      }
+    }
+
+    return clusters;
+  }
+
+  haversine(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) ** 2 +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLon / 2) ** 2;
+    return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+}
+
+// ============================================================
+// Task 5.5 — Crime DNA Analysis Output
+// ============================================================
+
+function formatCrimeDNAReport(fir, patternResult, matches) {
+  const firNo = fir.fir_no || "NEW_FIR";
+  const report = [];
+
+  report.push(`🧬 CRIME DNA ANALYSIS — ${firNo}`);
+  report.push(`   Crime: ${fir.crime_type || "unknown"}`);
+  report.push(`   Location: ${fir.district || "unknown"}, ${fir.taluk || ""}`);
+  report.push(`   Date: ${fir.date_filed || "new"}`);
+  report.push("");
+
+  // MO Signature
+  report.push(`📋 MO SIGNATURE`);
+  const features = extractMOFeatures(fir);
+  for (const [key, val] of Object.entries(features)) {
+    if (val !== "unknown") {
+      report.push(`   ${key.replace(/_/g, " ")}: ${val.replace(/_/g, " ")}`);
+    }
+  }
+  report.push("");
+
+  // Best matches
+  const topMatches = (matches || []).slice(0, 5);
+  if (topMatches.length > 0) {
+    report.push(`🔍 TOP MATCHES`);
+    for (const m of topMatches) {
+      const linkStatus = m.linked ? "LINKED" : "NO LINK";
+      report.push(`   ${m.fir_no} (${(m.score * 100).toFixed(0)}%) — ${m.crime_type}, ${m.district} [${linkStatus}]`);
+      if (m.shared_features && m.shared_features.length > 0) {
+        report.push(`      Shared: ${m.shared_features.slice(0, 4).join(", ")}`);
+      }
+    }
+    report.push("");
+  }
+
+  // Pattern detection
+  if (patternResult.pattern_detected) {
+    report.push(`⚠️ PATTERN ALERT`);
+    report.push(`   Detected ${patternResult.clusters.length} cluster(s) with similar MO`);
+    for (const c of patternResult.clusters) {
+      report.push(`   Cluster: ${c.members.length} FIRs in ${c.radius_km}km radius`);
+      report.push(`   Members: ${c.members.map(m => m.fir_no).join(", ")}`);
+    }
+  } else {
+    report.push(`✅ No active pattern detected`);
+  }
+  report.push("");
+
+  // Recommendations
+  report.push(`💡 INVESTIGATIVE LEADS`);
+  if (topMatches.length > 0) {
+    const topMatch = topMatches[0];
+    report.push(`   • Review FIR ${topMatch.fir_no} for case parallels`);
+    if (topMatch.shared_features && topMatch.shared_features.length > 0) {
+      report.push(`   • Focus on shared MO elements: ${topMatch.shared_features.slice(0, 3).join(", ")}`);
+    }
+  }
+  report.push("");
+
+  report.push(`📎 Sources: ${firNo} + ${topMatches.length} matched FIRs`);
+  report.push(`⚠️ Disclaimer: AI-generated leads. Verify with official records.`);
+
+  return report.join("\n");
+}
+
+// ============================================================
+// Task 5.6 — Crime DNA Catalyst Function Handler
+// ============================================================
+
+class CrimeDNAEngine {
+  constructor() {
+    this.searcher = new MOSimilaritySearch();
+    this.detector = null;
+    this.initialized = false;
+  }
+
+  async initialize(firs) {
+    if (this.initialized) return this;
+    const count = await this.searcher.buildIndex(firs);
+    this.detector = new PatternDetector(this.searcher);
+    this.initialized = true;
+    return this;
+  }
+
+  async analyzeNewFIR(fir) {
+    const features = extractMOFeatures(fir);
+    const matches = await this.searcher.searchNewFIR(fir, { topK: 10 });
+    const patternResult = await this.detector.detectNewFIRPattern(fir);
+    const report = formatCrimeDNAReport(fir, patternResult, matches);
+
+    return {
+      fir_no: fir.fir_no || "NEW_FIR",
+      features,
+      matches: matches.slice(0, 5),
+      match_count: matches.length,
+      pattern: patternResult,
+      report,
+      generated_at: new Date().toISOString(),
+    };
+  }
+
+  async analyzeExistingFIR(firNo) {
+    const entry = this.searcher.index.get(firNo);
+    if (!entry) throw new Error(`FIR not found in index: ${firNo}`);
+
+    const matches = await this.searcher.search(firNo, { topK: 10 });
+    const patternResult = await this.detector.detectPatterns(firNo);
+    const report = formatCrimeDNAReport(entry.fir, patternResult, matches);
+
+    return {
+      fir_no: firNo,
+      features: entry.features,
+      matches: matches.slice(0, 5),
+      match_count: matches.length,
+      pattern: patternResult,
+      report,
+      generated_at: new Date().toISOString(),
+    };
+  }
+}
+
 module.exports = {
   extractMOFeatures,
   buildMOVector,
   MOSimilaritySearch,
+  PatternDetector,
+  CrimeDNAEngine,
+  formatCrimeDNAReport,
   MO_FEATURES,
   FEATURE_VOCABULARY,
 };
@@ -363,29 +606,20 @@ if (require.main === module) {
     fs.readFileSync(path.join(__dirname, "../../data/synthetic/output/firs.json"), "utf8")
   );
 
-  console.log("=== Crime DNA Engine Test ===\n");
+  console.log("=== Crime DNA Engine E2E Test (Task 5.7) ===\n");
 
-  // Extract MO features for first FIR
-  const testFir = firs[0];
-  console.log(`FIR: ${testFir.fir_no} (${testFir.crime_type})`);
-  const features = extractMOFeatures(testFir);
-  console.log("Features:", JSON.stringify(features, null, 2));
+  async function run() {
+    const engine = new CrimeDNAEngine();
+    await engine.initialize(firs);
 
-  // Build vector
-  const vector = buildMOVector(features);
-  console.log(`\nVector dimension: ${vector.length}`);
-  console.log(`Non-zero: ${vector.filter(v => v > 0).length}`);
+    const testFir = firs[0];
+    console.log(`Testing with FIR: ${testFir.fir_no} (${testFir.crime_type})\n`);
 
-  // Build index and search
-  const searcher = new MOSimilaritySearch();
-  searcher.buildIndex(firs).then(async () => {
-    console.log(`\nIndexed ${firs.length} FIRs`);
+    const result = await engine.analyzeExistingFIR(testFir.fir_no);
+    console.log(result.report);
+    console.log(`\nMatches found: ${result.match_count}`);
+    console.log(`Pattern detected: ${result.pattern.pattern_detected}`);
+  }
 
-    const results = await searcher.search(testFir.fir_no, { topK: 5 });
-    console.log(`\nTop 5 similar to ${testFir.fir_no}:`);
-    for (const r of results) {
-      console.log(`  ${r.fir_no} (score: ${r.score}) — ${r.crime_type} in ${r.district}`);
-      console.log(`    Shared: ${r.shared_features.join(", ")}`);
-    }
-  });
+  run().catch(console.error);
 }
