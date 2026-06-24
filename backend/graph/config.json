@@ -1,0 +1,7 @@
+{
+  "host": "localhost",
+  "port": 6380,
+  "graph_name": "kci",
+  "password": "",
+  "description": "FalkorDB instance for KCI-OS Knowledge Graph. Docker container 'falkordb' on port 6380."
+}
