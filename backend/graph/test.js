@@ -1,6 +1,6 @@
 /**
  * FalkorDB Client Test
- * 
+ *
  * Quick smoke test to verify client connects and can run queries.
  * Run: node backend/graph/test.js
  */
@@ -24,13 +24,15 @@ async function test() {
     // Test 3: Create a test node
     console.log("Test 3: Creating test node...");
     await client.query(
-      "CREATE (n:TestNode {name: 'kci-test', created: timestamp()}) RETURN n"
+      "CREATE (n:TestNode {name: 'kci-test', created: timestamp()}) RETURN n",
     );
     console.log("  ✓ Node created");
 
     // Test 4: Query the node
     console.log("Test 4: Querying test node...");
-    const result = await client.query("MATCH (n:TestNode) RETURN n.name AS name");
+    const result = await client.query(
+      "MATCH (n:TestNode) RETURN n.name AS name",
+    );
     console.log(`  ✓ Result: ${JSON.stringify(result)}`);
 
     // Test 5: Get stats

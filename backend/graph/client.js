@@ -1,9 +1,9 @@
 /**
  * FalkorDB Client Library
- * 
+ *
  * Reusable client for KCI-OS Knowledge Graph operations.
  * Uses Redis-compatible protocol (FalkorDB is Redis-compatible).
- * 
+ *
  * Task 2.1 — Build FalkorDB Client Library
  */
 
@@ -109,14 +109,12 @@ class FalkorClient {
    * @returns {object} Graph stats
    */
   async getStats() {
-    const nodeCount = await this.query(
-      "MATCH (n) RETURN count(n) AS count"
-    );
+    const nodeCount = await this.query("MATCH (n) RETURN count(n) AS count");
     const edgeCount = await this.query(
-      "MATCH ()-[r]->() RETURN count(r) AS count"
+      "MATCH ()-[r]->() RETURN count(r) AS count",
     );
     const labelCount = await this.query(
-      "CALL db.labels() YIELD label RETURN count(label) AS count"
+      "CALL db.labels() YIELD label RETURN count(label) AS count",
     );
 
     return {
