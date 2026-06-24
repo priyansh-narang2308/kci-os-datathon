@@ -1,0 +1,19 @@
+{
+  "name": "kci-os-catalyst",
+  "version": "1.0.0",
+  "description": "KCI-OS Catalyst Functions — KSP Datathon 2026",
+  "private": true,
+  "scripts": {
+    "start": "catalyst functions:shell",
+    "deploy": "catalyst deploy",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@zmc/catalyst": "^1.0.0",
+    "falkor-db": "^1.0.0",
+    "sentence-transformers": "^1.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0"
+  }
+}

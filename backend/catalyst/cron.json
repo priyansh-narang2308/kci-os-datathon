@@ -1,0 +1,14 @@
+{
+  "cron_jobs": [
+    {
+      "name": "nightly_forecast_recompute",
+      "description": "Nightly: recompute hotspot forecasts, retrain models, evaluate early warning rules",
+      "schedule": "0 2 * * *",
+      "timezone": "Asia/Kolkata",
+      "function": "forecast-trigger",
+      "payload": {
+        "action": "full_recompute"
+      }
+    }
+  ]
+}

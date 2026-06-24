@@ -1,0 +1,30 @@
+{
+  "event_listeners": [
+    {
+      "name": "on_fir_insert",
+      "description": "Fires when a new FIR is inserted into Data Store. Triggers the Crime DNA cascade.",
+      "trigger": {
+        "type": "datastore",
+        "event": "insert",
+        "collection": "FIR"
+      },
+      "chain": [
+        {
+          "step": 1,
+          "function": "entity-extraction",
+          "description": "Extract entities and MO features from FIR"
+        },
+        {
+          "step": 2,
+          "function": "crime-dna-analyzer",
+          "description": "Run MO similarity search and pattern detection"
+        },
+        {
+          "step": 3,
+          "function": "alert-generator",
+          "description": "Evaluate early warning rules and generate alerts if triggered"
+        }
+      ]
+    }
+  ]
+}
