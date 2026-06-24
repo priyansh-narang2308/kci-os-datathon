@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+.env
+.venv
+venv/
+env/
+
+# Build
+dist/
+build/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Runtime
+.cache/
+tmp/
+temp/
+
+# Catalyst
+.catalyst/
+catalyst.json
+
+# FalkorDB
+falkordb.conf
+
+# Data (keep schema, ignore generated large files)
+data/synthetic/*.json
+data/synthetic/*.csv
+!data/schema/
+
+# Models
+models/*.bin
+models/*.pkl
+models/*.h5
+.cache/sentence-transformers/
