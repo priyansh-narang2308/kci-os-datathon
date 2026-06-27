@@ -2,6 +2,42 @@ const express = require("express");
 const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
+const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+
+const JWT_SECRET = "kci-os-demo-secret-2026";
+const JWT_EXPIRY = "24h";
+
+const USERS = {
+  admin: { password: hashPassword("admin123"), role: "admin", name: "Admin", badge: "System Administrator" },
+  investigator: { password: hashPassword("invest123"), role: "investigator", name: "Inspector Sharma", badge: "Inspector Rank" },
+  analyst: { password: hashPassword("analyst123"), role: "analyst", name: "Analyst Rao", badge: "Senior Analyst" },
+  supervisor: { password: hashPassword("super123"), role: "supervisor", name: "DG Iyer", badge: "Deputy General" },
+  policymaker: { password: hashPassword("policy123"), role: "policymaker", name: "Secretary Nair", badge: "Policy Advisor" },
+};
+
+function hashPassword(pw) {
+  return crypto.createHash("sha256").update(pw + JWT_SECRET).digest("hex");
+}
+
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  if (!token) return res.status(401).json({ error: "Authentication required" });
+  jwt.verify(token, JWT_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ error: "Invalid or expired token" });
+    req.user = user;
+    next();
+  });
+}
+
+function requireRole(...roles) {
+  return (req, res, next) => {
+    if (!req.user) return res.status(401).json({ error: "Authentication required" });
+    if (!roles.includes(req.user.role)) return res.status(403).json({ error: `Access denied. Required role: ${roles.join(" or ")}` });
+    next();
+  };
+}
 
 const FIRS_PATH = path.join(__dirname, "..", "data", "synthetic", "output", "firs.json");
 const EDGES_PATH = path.join(__dirname, "..", "data", "synthetic", "output", "edges.json");
@@ -115,6 +151,43 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// --- Auth routes (public) ---
+app.post("/api/auth/login", (req, res) => {
+  try {
+    const { username, password } = req.body;
+    if (!username || !password) return res.status(400).json({ error: "Username and password required" });
+    const user = USERS[username.toLowerCase()];
+    if (!user || user.password !== hashPassword(password)) return res.status(401).json({ error: "Invalid credentials" });
+    const token = jwt.sign(
+      { username: username.toLowerCase(), role: user.role, name: user.name, badge: user.badge },
+      JWT_SECRET,
+      { expiresIn: JWT_EXPIRY }
+    );
+    res.json({
+      token,
+      user: { username: username.toLowerCase(), role: user.role, name: user.name, badge: user.badge },
+    });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.post("/api/auth/switch-role", authenticateToken, (req, res) => {
+  try {
+    const { role } = req.body;
+    const validRoles = ["admin", "investigator", "analyst", "supervisor", "policymaker"];
+    if (!validRoles.includes(role)) return res.status(400).json({ error: "Invalid role" });
+    const token = jwt.sign(
+      { username: req.user.username, role, name: req.user.name, badge: req.user.badge },
+      JWT_SECRET,
+      { expiresIn: JWT_EXPIRY }
+    );
+    res.json({ token, user: { username: req.user.username, role, name: req.user.name, badge: req.user.badge } });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.get("/api/auth/me", authenticateToken, (req, res) => {
+  res.json({ user: req.user });
+});
+
 async function ensureCrimeDNA() {
   if (!crimeDNAInitialized) { await crimeDNA.initialize(firs); crimeDNAInitialized = true; }
 }
@@ -127,7 +200,7 @@ async function ensureInvestigation() {
   if (!investigationInitialized) { await investigation.initialize(firs); investigationInitialized = true; }
 }
 
-app.post("/api/nlu", (req, res) => {
+app.post("/api/nlu", authenticateToken, (req, res) => {
   try {
     const { query: q } = req.body;
     if (!q) return res.status(400).json({ error: "Missing query" });
@@ -135,7 +208,7 @@ app.post("/api/nlu", (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-app.post("/api/graphrag", async (req, res) => {
+app.post("/api/graphrag", authenticateToken, async (req, res) => {
   try {
     const { query: q } = req.body;
     if (!q) return res.status(400).json({ error: "Missing query" });
@@ -238,7 +311,7 @@ app.post("/api/graphrag", async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-app.post("/api/crime-dna", async (req, res) => {
+app.post("/api/crime-dna", authenticateToken, async (req, res) => {
   try {
     await ensureCrimeDNA();
     const target = (req.body.fir_no ? firs.find(f => f.fir_no === req.body.fir_no) : null) || firs[0];
@@ -247,7 +320,7 @@ app.post("/api/crime-dna", async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-app.post("/api/network", async (req, res) => {
+app.post("/api/network", authenticateToken, async (req, res) => {
   try {
     const target = req.body.target || "ACC_001";
     const netResult = await networkAnalyzer.getNetworkAround(target, 2);
@@ -255,7 +328,7 @@ app.post("/api/network", async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-app.post("/api/forecast", async (req, res) => {
+app.post("/api/forecast", authenticateToken, async (req, res) => {
   try {
     await ensureForecasting();
     const ct = req.body.crime_type || "theft", dist = req.body.district || "Bengaluru Urban", d = req.body.days || 30;
@@ -264,7 +337,7 @@ app.post("/api/forecast", async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-app.post("/api/similar-cases", async (req, res) => {
+app.post("/api/similar-cases", authenticateToken, async (req, res) => {
   try {
     await ensureInvestigation();
     const target = (req.body.fir_no ? firs.find(f => f.fir_no === req.body.fir_no) : null) || firs[0];
@@ -273,7 +346,7 @@ app.post("/api/similar-cases", async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-app.get("/api/stats", (req, res) => {
+app.get("/api/stats", authenticateToken, (req, res) => {
   try {
     const districts = [...new Set(firs.map(f => f.district))].length;
     const oneWeekAgo = new Date(); oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
@@ -282,7 +355,7 @@ app.get("/api/stats", (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-app.get("/api/activity", (req, res) => {
+app.get("/api/activity", authenticateToken, (req, res) => {
   const r = () => Math.floor(Math.random() * firs.length);
   res.json([
     { action: "Crime DNA match", detail: `87% MO similarity — FIR ${firs[r()].fir_no}`, time: "2 min ago", badge: "Match" },
@@ -292,17 +365,17 @@ app.get("/api/activity", (req, res) => {
   ]);
 });
 
-app.get("/api/heatmap", async (req, res) => {
+app.get("/api/heatmap", authenticateToken, async (req, res) => {
   try { await ensureForecasting(); res.json(forecasting.getHeatmapData()); }
   catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-app.get("/api/alerts", async (req, res) => {
+app.get("/api/alerts", authenticateToken, async (req, res) => {
   try { await ensureForecasting(); res.json(forecasting.evaluateEarlyWarnings()); }
   catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-app.get("/api/forecast/summary", async (req, res) => {
+app.get("/api/forecast/summary", authenticateToken, async (req, res) => {
   try {
     await ensureForecasting();
     const districts = [...new Set(firs.map(f => f.district))].slice(0, 6);

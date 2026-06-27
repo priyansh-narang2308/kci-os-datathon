@@ -1,11 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const API_BASE = "/api";
 
+function getAuthHeaders(): Record<string, string> {
+  const token = localStorage.getItem("kci_os_token");
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
-    headers: { "Content-Type": "application/json", ...options?.headers },
+    headers: { "Content-Type": "application/json", ...getAuthHeaders(), ...options?.headers },
     ...options,
   });
+  if (res.status === 401 || res.status === 403) {
+    localStorage.removeItem("kci_os_token");
+    window.location.href = "/login";
+    throw new Error("Session expired");
+  }
   if (!res.ok) {
     const body = await res.text();
     throw new Error(`${res.status}: ${body}`);

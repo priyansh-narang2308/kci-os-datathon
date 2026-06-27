@@ -482,7 +482,8 @@ function formatCrimeDNAReport(fir, patternResult, matches) {
   const features = extractMOFeatures(fir);
   for (const [key, val] of Object.entries(features)) {
     if (val !== "unknown") {
-      report.push(`   ${key.replace(/_/g, " ")}: ${val.replace(/_/g, " ")}`);
+      const displayVal = typeof val === 'string' ? val.replace(/_/g, " ") : Array.isArray(val) ? val.join(", ") : String(val);
+      report.push(`   ${key.replace(/_/g, " ")}: ${displayVal}`);
     }
   }
   report.push("");
