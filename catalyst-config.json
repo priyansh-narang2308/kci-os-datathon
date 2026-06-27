@@ -1,8 +1,8 @@
 {
   "version": "1.0",
   "project_name": "kci-os",
-  "project_id": "",
-  "org_id": "",
+  "project_id": "49053000000024001",
+  "org_id": "60073911824",
   "data_center": "in",
   "description": "Karnataka Crime Intelligence Operating System — KSP Datathon 2026",
   "features": {

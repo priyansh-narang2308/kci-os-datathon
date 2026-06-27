@@ -1,0 +1,39 @@
+{
+  "gateway": {
+    "name": "kci-os-api",
+    "basepath": "/api",
+    "description": "KCI-OS API Gateway — KSP Datathon 2026",
+    "rateLimits": {
+      "burstLimit": 100,
+      "perSecond": 10,
+      "throttleInterval": "minute",
+      "throttleRetries": 3
+    }
+  },
+  "routes": {
+    "/graphrag": {
+      "target": "graph-rag-query",
+      "auth": true,
+      "methods": ["POST"],
+      "description": "GraphRAG natural language query"
+    },
+    "/nlu": {
+      "target": "nlu-pipeline",
+      "auth": true,
+      "methods": ["POST"],
+      "description": "NLU intent classification"
+    },
+    "/similar-cases": {
+      "target": "similar-cases",
+      "auth": true,
+      "methods": ["POST"],
+      "description": "Similar case retrieval"
+    },
+    "/export": {
+      "target": "pdf-export",
+      "auth": true,
+      "methods": ["POST"],
+      "description": "Conversation PDF export"
+    }
+  }
+}

@@ -1,41 +1,78 @@
-/**
- * GraphRAG Query — Catalyst Function
- * 
- * Handles natural language queries via the Knowledge Graph.
- * Schema-grounded Cypher generation + vector retrieval + grounded LLM response.
- */
-
 const catalyst = require("@zmc/catalyst");
+const FalkorClient = require("../../../graph/client");
+const { GraphRAGPipeline } = require("../../../graph/pipeline");
+const { processQuery } = require("../../../nlu/router");
 
 exports.handler = async function(event) {
   try {
     const catalystApp = catalyst.initialize(event);
-    
+    const datastore = catalystApp.datastore();
     const { query, user_role, jurisdiction } = event.data;
-    
-    // TODO: Task 3.6 — NLU intent classification + slot extraction
-    // TODO: Task 4.1 — Schema-grounded query planner
-    // TODO: Task 4.2 — Structured graph retrieval
-    // TODO: Task 4.3 — Vector retrieval (parallel)
-    // TODO: Task 4.4 — Hybrid merger
-    // TODO: Task 4.5 — Context assembly with citations
-    // TODO: Task 4.6 — Grounded response generation
-    // TODO: Task 4.7 — Reasoning path extraction
-    
+
+    if (!query) {
+      return { status: 400, content: { error: "Missing query text" } };
+    }
+
+    const nluResult = processQuery(query);
+
+    if (nluResult.status === "needs_clarification") {
+      return {
+        status: 200,
+        content: {
+          type: "clarification",
+          missing_slots: nluResult.missing_slots,
+          prompt: nluResult.clarification_prompt,
+          partial_intent: nluResult.intent
+        }
+      };
+    }
+
+    const firTable = datastore.table("FIR");
+    const allRows = await firTable.getAllRows();
+    const firs = allRows.map(r => r.FIR).filter(Boolean);
+
+    const client = new FalkorClient({
+      host: process.env.FALKORDB_HOST || "localhost",
+      port: parseInt(process.env.FALKORDB_PORT || "6380"),
+      graph_name: "kci"
+    });
+    await client.connect();
+
+    const pipeline = new GraphRAGPipeline(client);
+    await pipeline.initialize(firs);
+
+    const result = await pipeline.processQuery(nluResult.intent, nluResult.slots);
+
+    const startTime = Date.now();
+    const auditTable = datastore.table("AuditLog");
+    await auditTable.insertRow({
+      log_id: `qry-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      timestamp: new Date(),
+      officer_id: user_role || "anonymous",
+      query_text: query,
+      intent: nluResult.intent,
+      engine_used: "graphrag",
+      results_count: result.citations?.length || 0,
+      response_time_ms: Date.now() - startTime,
+      jurisdiction: jurisdiction || ""
+    });
+
+    await client.disconnect();
+
     return {
       status: 200,
       content: {
-        message: "GraphRAG query placeholder — awaiting implementation",
-        query: query
+        type: "response",
+        response: result.response,
+        citations: result.citations,
+        confidence: result.confidence,
+        reasoning_path: result.reasoningPath,
+        intent: nluResult.intent,
+        slots: nluResult.slots,
+        language: nluResult.language
       }
     };
   } catch (err) {
-    return {
-      status: 500,
-      content: {
-        message: "GraphRAG query failed",
-        error: err.message
-      }
-    };
+    return { status: 500, content: { error: err.message } };
   }
 };

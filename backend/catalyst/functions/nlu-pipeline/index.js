@@ -1,25 +1,26 @@
-/**
- * NLU Pipeline — Catalyst Function
- * 
- * Bilingual intent classification + slot extraction.
- * Handles English, Kannada, and code-mixed queries.
- */
+const { processQuery } = require("../../../nlu/router");
 
 exports.handler = async function(event) {
   try {
     const { text, language_hint } = event.data;
-    
-    // TODO: Task 3.3 — English NLU
-    // TODO: Task 3.4 — Kannada NLU
-    // TODO: Task 3.5 — Code-mix handler
-    
+
+    if (!text) {
+      return { status: 400, content: { error: "Missing text to process" } };
+    }
+
+    const result = processQuery(text);
+
     return {
       status: 200,
       content: {
-        intent: "unknown",
-        slots: {},
-        language: "en",
-        confidence: 0.0,
+        intent: result.intent,
+        intent_confidence: result.intent_confidence,
+        slots: result.slots,
+        language: result.language,
+        engine: result.engine,
+        status: result.status,
+        missing_slots: result.missing_slots || [],
+        clarification_prompt: result.clarification_prompt || null,
         raw_text: text
       }
     };

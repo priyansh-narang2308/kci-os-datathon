@@ -5,15 +5,10 @@
   "private": true,
   "scripts": {
     "start": "catalyst functions:shell",
-    "deploy": "catalyst deploy",
-    "test": "jest"
+    "deploy": "catalyst deploy"
   },
   "dependencies": {
-    "@zmc/catalyst": "^1.0.0",
-    "falkor-db": "^1.0.0",
-    "sentence-transformers": "^1.0.0"
-  },
-  "devDependencies": {
-    "jest": "^29.0.0"
+    "redis": "^4.7.1",
+    "uuid": "^9.0.1"
   }
 }

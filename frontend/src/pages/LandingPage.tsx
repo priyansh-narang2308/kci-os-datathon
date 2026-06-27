@@ -116,16 +116,6 @@ const fadeUpVariants: Variants = {
   },
 };
 
-const statVariants: Variants = {
-  hidden: { opacity: 0, y: 30, scale: 0.9 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: { type: "spring", duration: 0.6, bounce: 0.15, delay: 0.1 * i },
-  }),
-};
-
 const featureCardVariants: Variants = {
   hidden: { opacity: 0, y: 50, filter: "blur(10px)" },
   visible: (i: number) => ({
@@ -238,14 +228,6 @@ const engines = [
       "Outcome-linked technique recommendations",
     ],
   },
-];
-
-const stats = [
-  { value: "500+", label: "FIRs Processed", sub: "Across 6 districts" },
-  { value: "5", label: "Intelligence Engines", sub: "Working in concert" },
-  { value: "1,715+", label: "Graph Edges", sub: "Entity relationships mapped" },
-  { value: "3", label: "Gangs Discovered", sub: "Via community detection" },
-  { value: "2", label: "Languages", sub: "English & Kannada" },
 ];
 
 const steps = [
@@ -415,37 +397,6 @@ export default function LandingPage() {
         </motion.div>
       </section>
 
-      {/* ===== STATS STRIP ===== */}
-      <section className="relative border-b border-emerald-900/10 bg-emerald-950/5 px-7 py-12 sm:px-11 lg:px-14">
-        <div className="mx-auto max-w-7xl">
-          <motion.div
-            className="grid grid-cols-2 gap-8 md:grid-cols-5"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
-          >
-            {stats.map((stat, i) => (
-              <motion.div
-                key={stat.label}
-                custom={i}
-                variants={statVariants}
-                className="text-center"
-              >
-                <p className="text-2xl leading-none font-semibold tracking-tight text-emerald-900 sm:text-3xl">
-                  {stat.value}
-                </p>
-                <p className="mt-1.5 text-sm font-medium text-emerald-800/70">
-                  {stat.label}
-                </p>
-                <p className="mt-0.5 text-[11px] text-emerald-700/50">
-                  {stat.sub}
-                </p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
       {/* ===== PLATFORM OVERVIEW ===== */}
       <section
         id="platform"
@@ -458,13 +409,6 @@ export default function LandingPage() {
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
           >
-            <motion.div
-              variants={fadeUpVariants}
-              className="mb-4 inline-flex items-center gap-2 rounded-full bg-emerald-900/10 px-4 py-1.5 text-xs font-medium text-emerald-800"
-            >
-              <Shield className="size-3.5" />
-              Platform Overview
-            </motion.div>
             <motion.h2
               variants={fadeUpVariants}
               className="text-3xl leading-[1.1] font-normal tracking-[-0.045em] text-emerald-900 sm:text-4xl lg:text-5xl"
@@ -543,13 +487,6 @@ export default function LandingPage() {
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
           >
-            <motion.div
-              variants={fadeUpVariants}
-              className="mb-4 inline-flex items-center gap-2 rounded-full bg-emerald-400/10 px-4 py-1.5 text-xs font-medium text-emerald-300"
-            >
-              <Brain className="size-3.5" />
-              Five Intelligence Engines
-            </motion.div>
             <motion.h2
               variants={fadeUpVariants}
               className="text-3xl leading-[1.1] font-normal tracking-[-0.045em] text-emerald-50 sm:text-4xl lg:text-5xl"
@@ -624,13 +561,6 @@ export default function LandingPage() {
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
           >
-            <motion.div
-              variants={fadeUpVariants}
-              className="mb-4 inline-flex items-center gap-2 rounded-full bg-emerald-900/10 px-4 py-1.5 text-xs font-medium text-emerald-800"
-            >
-              <Zap className="size-3.5" />
-              From FIR to Intelligence in Seconds
-            </motion.div>
             <motion.h2
               variants={fadeUpVariants}
               className="text-3xl leading-[1.1] font-normal tracking-[-0.045em] text-emerald-900 sm:text-4xl lg:text-5xl"
@@ -692,13 +622,7 @@ export default function LandingPage() {
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
           >
-            <motion.div
-              variants={fadeUpVariants}
-              className="mb-4 inline-flex items-center gap-2 rounded-full bg-emerald-400/10 px-4 py-1.5 text-xs font-medium text-emerald-300"
-            >
-              <BarChart3 className="size-3.5" />
-              What Makes Us Different
-            </motion.div>
+
             <motion.h2
               variants={fadeUpVariants}
               className="text-3xl leading-[1.1] font-normal tracking-[-0.045em] text-emerald-50 sm:text-4xl lg:text-5xl"
