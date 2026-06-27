@@ -1,5 +1,4 @@
-"use client";
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useRef, useEffect } from "react";
 import {
   MessageSquareText,
@@ -29,6 +28,17 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  queryGraphRAG,
+  getDashboardStats,
+  getActivityFeed,
+  getForecastSummary,
+} from "@/services/api";
+import type {
+  GraphRAGResponse,
+  DashboardStats,
+  ActivityItem,
+} from "@/services/api";
 
 interface ChatMessage {
   role: string;
@@ -40,8 +50,8 @@ interface ChatMessage {
 const suggestions = [
   { label: "Show chain-snatching cases in Mysuru", icon: FileSearch },
   { label: "Network around accused ACC_001", icon: Network },
-  { label: "Find similar cases to FIR 2024/MSR/1234", icon: Library },
-  { label: "Show repeat offenders in Bengaluru", icon: TrendingUp },
+  { label: "Find similar cases to FIR 2024/MAN/0358", icon: Library },
+  { label: "Show crime trends in Bengaluru", icon: TrendingUp },
 ];
 
 const initialMessages: ChatMessage[] = [
@@ -57,84 +67,74 @@ const initialMessages: ChatMessage[] = [
   },
 ];
 
-const statCards = [
-  {
-    label: "Total FIRs",
-    value: "500",
-    sub: "Across 6 districts",
-    icon: ScrollText,
-    change: "+12 this week",
-    color: "text-blue-600 bg-blue-50 border-blue-100",
-  },
-  {
-    label: "Active Alerts",
-    value: "3",
-    sub: "2 critical, 1 warning",
-    icon: Zap,
-    change: "+1 new",
-    color: "text-amber-600 bg-amber-50 border-amber-100",
-  },
-  {
-    label: "Repeat Offenders",
-    value: "25",
-    sub: "7 with 5+ FIRs",
-    icon: Activity,
-    change: "2 flagged",
-    color: "text-purple-600 bg-purple-50 border-purple-100",
-  },
-  {
-    label: "Engines Online",
-    value: "5 / 5",
-    sub: "All systems nominal",
-    icon: Shield,
-    change: "100% Live",
-    color: "text-emerald-600 bg-emerald-50 border-emerald-100",
-  },
-];
-
-const recentActivity = [
-  {
-    action: "Crime DNA match",
-    detail: "87% MO similarity — FIR 2024/MSR/4321",
-    time: "2 min ago",
-    badge: "Match",
-  },
-  {
-    action: "Network updated",
-    detail: "ACC_001 linked to ACC_007 via phone call logs",
-    time: "15 min ago",
-    badge: "Graph",
-  },
-  {
-    action: "Early warning",
-    detail: "3 similar MOs in Mysuru — 7 day window",
-    time: "1 hr ago",
-    badge: "Alert",
-  },
-  {
-    action: "Forecast computed",
-    detail: "Mysuru Central — elevated risk next 14d",
-    time: "2 hr ago",
-    badge: "Predict",
-  },
-];
-
 export default function InvestigationPage() {
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [activeTab, setActiveTab] = useState("stats");
-  const [selectedQueryData, setSelectedQueryData] = useState<string | null>(
-    null,
-  );
+  const [selectedQueryData, setSelectedQueryData] =
+    useState<GraphRAGResponse | null>(null);
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [activity, setActivity] = useState<ActivityItem[]>([]);
+  const [networkData, setNetworkData] = useState<any>(null);
+  const [forecastSummary, setForecastSummary] = useState<any[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    getDashboardStats()
+      .then(setStats)
+      .catch(() => {});
+    getActivityFeed()
+      .then(setActivity)
+      .catch(() => {});
+    getForecastSummary()
+      .then(setForecastSummary)
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
 
-  const handleSend = (text?: string) => {
+  const statCards = stats
+    ? [
+        {
+          label: "Total FIRs",
+          value: String(stats.total_firs),
+          sub: `Across ${stats.districts} districts`,
+          icon: ScrollText,
+          change: `+${stats.new_firs_this_week} this week`,
+          color: "text-blue-600 bg-blue-50 border-blue-100",
+        },
+        {
+          label: "Active Alerts",
+          value: String(stats.active_alerts),
+          sub: `${stats.critical_alerts} critical, ${stats.warning_alerts} warning`,
+          icon: Zap,
+          change: `+${stats.alerts_generated} new`,
+          color: "text-amber-600 bg-amber-50 border-amber-100",
+        },
+        {
+          label: "Repeat Offenders",
+          value: String(stats.repeat_offenders),
+          sub: `${stats.flagged_offenders} with 5+ FIRs`,
+          icon: Activity,
+          change: `${stats.flagged_offenders} flagged`,
+          color: "text-purple-600 bg-purple-50 border-purple-100",
+        },
+        {
+          label: "Engines Online",
+          value: `${stats.engines_online} / 5`,
+          sub: "All systems nominal",
+          icon: Shield,
+          change: "100% Live",
+          color: "text-emerald-600 bg-emerald-50 border-emerald-100",
+        },
+      ]
+    : [];
+
+  const handleSend = async (text?: string) => {
     const query = text || input;
     if (!query.trim()) return;
 
@@ -148,41 +148,268 @@ export default function InvestigationPage() {
     ]);
     setInput("");
     setIsTyping(true);
-
-    setSelectedQueryData(query);
     setActiveTab("response");
 
-    setTimeout(() => {
+    try {
+      const result = await queryGraphRAG(query);
       const botTime = new Date().toLocaleTimeString([], {
         hour: "2-digit",
         minute: "2-digit",
       });
-      let replyContent = `I analyzed your query about *"${query}"* across Karnataka's crime knowledge graph.`;
-      let richData: string | null = null;
 
-      if (query.includes("chain-snatching") || query.includes("Mysuru")) {
-        replyContent = `Found **3 linked chain-snatching FIRs** in Mysuru over the last 14 days matching the *'Pulsar bike + helmet'* MO signature. Confidence score is **94.2%** based on spatio-temporal clustering.`;
-        richData = "chain";
-      } else if (query.includes("ACC_001") || query.includes("Network")) {
-        replyContent = `Traversed 3 graph hops from **ACC_001 (Ravi Kumar)**. Discovered a hidden communication link to **ACC_007** via shared IMEI receiver tower in Mandya.`;
-        richData = "network";
-      } else if (query.includes("2024/MSR/1234") || query.includes("similar")) {
-        replyContent = `Crime DNA Engine retrieved **4 historical cases** with >= 85% narrative similarity. Recommended investigative lead: *Inspect pawn shops in Devaraja Mohalla*.`;
-        richData = "similar";
-      } else {
-        replyContent = `Queried 500+ FIR records and extracted relevant community nodes. **[View Graph and Trace tabs on the right for full intelligence analysis →]**`;
-        richData = "general";
+      setSelectedQueryData(result);
+      setActiveTab("response");
+
+      if (result.type === "network") {
+        setNetworkData(result.network || null);
       }
 
+      const botContent =
+        result.response ||
+        `I analyzed your query about *"${query}"* across Karnataka's crime knowledge graph.`;
       setMessages((prev) => [
         ...prev,
-        { role: "bot", content: replyContent, timestamp: botTime, richData },
+        {
+          role: "bot",
+          content: botContent,
+          timestamp: botTime,
+          richData: result.type,
+        },
       ]);
-      setIsTyping(false);
-    }, 1000);
+    } catch {
+      const botTime = new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "bot",
+          content: `I encountered an error processing your query. Please try again or rephrase.`,
+          timestamp: botTime,
+          richData: null,
+        },
+      ]);
+    }
+
+    setIsTyping(false);
   };
 
-  // Right Panel Content Component
+  const renderReasoningPath = () => {
+    const path = selectedQueryData?.reasoning_path;
+    if (!path || path.length === 0) {
+      return (
+        <div className="flex h-full flex-col items-center justify-center p-6 text-center text-stone-400">
+          <p className="text-xs">Send a query to see the AI audit trace.</p>
+        </div>
+      );
+    }
+    return (
+      <div className="relative pl-6 space-y-4 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-stone-200">
+        {path.map((step, idx) => (
+          <div
+            key={idx}
+            className="relative rounded-xl border border-stone-200/80 bg-white p-3 shadow-2xs"
+          >
+            <span className="absolute -left-[23px] top-3 flex size-5 items-center justify-center rounded-full bg-emerald-600 text-[10px] font-bold text-white ring-4 ring-[#F9F9F8]">
+              {idx + 1}
+            </span>
+            <div className="flex justify-between items-center mb-1">
+              <h5 className="text-xs font-bold text-stone-800">{step.title}</h5>
+              <span className="text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100">
+                {step.conf}
+              </span>
+            </div>
+            <p className="text-[11px] text-stone-500 leading-relaxed font-mono bg-stone-50 p-1.5 rounded border border-stone-100 mt-1">
+              {step.desc}
+            </p>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const renderGraphTab = () => {
+    const nodes = networkData?.nodes || [];
+    const edges = networkData?.edges || [];
+    if (nodes.length === 0) {
+      return (
+        <div className="flex h-full flex-col items-center justify-center p-6 text-center text-stone-400">
+          <Network className="size-8 mb-2" />
+          <p className="text-xs font-medium">No graph data</p>
+          <p className="mt-1 text-[11px]">
+            Ask a network question to see the graph.
+          </p>
+        </div>
+      );
+    }
+    return (
+      <div className="flex h-full flex-col rounded-2xl border border-stone-200/80 bg-stone-900 p-4 text-white relative overflow-hidden shadow-inner min-h-[350px]">
+        <div className="flex items-center justify-between border-b border-stone-800 pb-3 mb-4 z-10">
+          <div className="flex items-center gap-2">
+            <Network className="size-4 text-emerald-400" />
+            <span className="text-xs font-semibold tracking-wide">
+              SUBGRAPH TOPOLOGY
+            </span>
+          </div>
+          <span className="rounded bg-emerald-500/20 px-2 py-0.5 text-[10px] font-medium text-emerald-300 border border-emerald-500/30">
+            {nodes.length} Nodes &bull; {edges.length} Edges
+          </span>
+        </div>
+        <div className="flex-1 flex items-center justify-center relative my-4">
+          <div className="absolute inset-0 bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:16px_16px] opacity-30" />
+          <div className="relative flex flex-col items-center gap-6 z-10 w-full max-w-xs">
+            {nodes.slice(0, 1).map((node: any) => (
+              <div
+                key={node.id}
+                className="flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold shadow-lg shadow-emerald-600/30 ring-4 ring-emerald-500/20"
+              >
+                <User className="size-3.5" /> {node.label}
+              </div>
+            ))}
+            {edges.length > 0 && (
+              <div className="h-6 w-0.5 bg-gradient-to-b from-emerald-500 to-amber-500 relative">
+                <span className="absolute -left-16 top-1 rounded bg-stone-800 px-1.5 py-0.5 text-[9px] text-stone-300 border border-stone-700 whitespace-nowrap">
+                  {edges[0].type} ({Math.round(edges[0].width * 50)}%)
+                </span>
+              </div>
+            )}
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              {nodes.slice(1, 6).map((node: any) => (
+                <div
+                  key={node.id}
+                  className="flex items-center gap-1.5 rounded-xl bg-stone-800 px-3 py-2 text-xs font-medium border border-stone-700"
+                >
+                  {node.type === "Location" ? (
+                    <MapPin className="size-3.5 text-blue-400" />
+                  ) : (
+                    <User className="size-3.5 text-amber-400" />
+                  )}
+                  {node.label}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="mt-auto border-t border-stone-800 pt-3 flex justify-between items-center text-[10px] text-stone-400 z-10">
+          <span>GraphRAG Louvain Algorithm</span>
+          <span className="text-emerald-400 flex items-center gap-1">
+            <Sparkles className="size-3" /> Live Graph
+          </span>
+        </div>
+      </div>
+    );
+  };
+
+  const renderDataTab = () => {
+    if (!selectedQueryData) {
+      return (
+        <div className="flex h-full flex-col items-center justify-center p-6 text-center text-stone-400">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-stone-100 mb-3">
+            <MessageSquareText className="size-6 text-stone-400" />
+          </div>
+          <p className="text-sm font-medium text-stone-600">
+            No Query Selected
+          </p>
+          <p className="mt-1 text-xs text-stone-400 max-w-xs">
+            Send a query from the chat panel to view structured extracted FIR
+            entities here.
+          </p>
+        </div>
+      );
+    }
+    const citations = selectedQueryData.citations || [];
+    return (
+      <div className="space-y-4">
+        <div className="rounded-2xl border border-emerald-200 bg-emerald-50/60 p-4">
+          <div className="flex items-center gap-2 text-emerald-800 font-semibold text-xs uppercase tracking-wider mb-1">
+            <CheckCircle2 className="size-4 text-emerald-600" /> Query Grounded
+            in Graph
+          </div>
+          <p className="text-xs text-emerald-700/80">
+            Retrieved from Karnataka Crime Knowledge Graph (GraphRAG v2.4)
+            &bull; {selectedQueryData.intent || "general_query"}
+          </p>
+        </div>
+        {citations.length > 0 && (
+          <div className="rounded-2xl border border-stone-200/80 bg-white p-4 shadow-2xs space-y-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-stone-400">
+              Retrieved Entity Records ({citations.length})
+            </h4>
+            <div className="divide-y divide-stone-100 rounded-xl border border-stone-100 bg-stone-50/50 text-xs">
+              {citations.map((cit, idx) => (
+                <div
+                  key={idx}
+                  className="p-3 flex justify-between items-center"
+                >
+                  <div>
+                    <p className="font-semibold text-stone-800">{cit.fir_no}</p>
+                    <p className="text-[11px] text-stone-500">
+                      {cit.district} &bull; {cit.crime_type}
+                    </p>
+                  </div>
+                  {cit.score !== undefined && (
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${cit.score > 0.8 ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700"}`}
+                    >
+                      {(cit.score * 100).toFixed(0)}%
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        {selectedQueryData.confidence !== undefined && (
+          <div className="rounded-2xl border border-stone-200/80 bg-white p-4 shadow-2xs">
+            <div className="flex items-center justify-between text-xs">
+              <span className="font-medium text-stone-600">
+                Confidence Score
+              </span>
+              <span className="font-bold text-emerald-700">
+                {(selectedQueryData.confidence * 100).toFixed(1)}%
+              </span>
+            </div>
+            <div className="mt-2 h-2 w-full rounded-full bg-stone-100 overflow-hidden">
+              <div
+                className="h-full rounded-full bg-emerald-500 transition-all"
+                style={{
+                  width: `${(selectedQueryData.confidence || 0) * 100}%`,
+                }}
+              />
+            </div>
+          </div>
+        )}
+        {forecastSummary.length > 0 &&
+          selectedQueryData?.type === "forecast" && (
+            <div className="rounded-2xl border border-stone-200/80 bg-white p-4 shadow-2xs space-y-2">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-stone-400">
+                Forecast Summary
+              </h4>
+              {forecastSummary
+                .filter((fs) => fs.risk !== "normal")
+                .slice(0, 3)
+                .map((fs, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between text-xs p-2 rounded-lg bg-stone-50 border border-stone-100"
+                  >
+                    <span className="font-medium text-stone-700">
+                      {fs.district} &bull; {fs.crime_type}
+                    </span>
+                    <span
+                      className={`font-bold px-1.5 py-0.5 rounded ${fs.risk === "critical" ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700"}`}
+                    >
+                      {fs.next_7}&nbsp;next 7d
+                    </span>
+                  </div>
+                ))}
+            </div>
+          )}
+      </div>
+    );
+  };
+
   const renderPanelContent = () => (
     <Tabs
       value={activeTab}
@@ -209,7 +436,6 @@ export default function InvestigationPage() {
         </TabsList>
       </div>
 
-      {/* STATS TAB */}
       <TabsContent
         value="stats"
         className="min-h-0 flex-1 overflow-y-auto p-4 m-0"
@@ -255,10 +481,10 @@ export default function InvestigationPage() {
               <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
             </div>
             <div className="space-y-2.5 divide-y divide-stone-100">
-              {recentActivity.map((act, i) => (
+              {activity.map((act, i) => (
                 <div
                   key={i}
-                  className={`pt-2.5 first:pt-0 flex items-start justify-between gap-3`}
+                  className="pt-2.5 first:pt-0 flex items-start justify-between gap-3"
                 >
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
@@ -283,127 +509,20 @@ export default function InvestigationPage() {
         </div>
       </TabsContent>
 
-      {/* DATA / RESPONSE TAB */}
       <TabsContent
         value="response"
         className="min-h-0 flex-1 overflow-y-auto p-4 m-0"
       >
-        {selectedQueryData ? (
-          <div className="space-y-4">
-            <div className="rounded-2xl border border-emerald-200 bg-emerald-50/60 p-4">
-              <div className="flex items-center gap-2 text-emerald-800 font-semibold text-xs uppercase tracking-wider mb-1">
-                <CheckCircle2 className="size-4 text-emerald-600" /> Query
-                Grounded in Graph
-              </div>
-              <p className="text-xs text-emerald-700/80">
-                Retrieved from Karnataka Crime Knowledge Graph (GraphRAG v2.4)
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-stone-200/80 bg-white p-4 shadow-2xs space-y-3">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-stone-400">
-                Retrieved Entity Records
-              </h4>
-              <div className="divide-y divide-stone-100 rounded-xl border border-stone-100 bg-stone-50/50 text-xs">
-                <div className="p-3 flex justify-between items-center">
-                  <div>
-                    <p className="font-semibold text-stone-800">
-                      FIR 2024/MSR/4321
-                    </p>
-                    <p className="text-[11px] text-stone-500">
-                      Devaraja PS • Chain Snatching
-                    </p>
-                  </div>
-                  <span className="rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-700">
-                    High Risk
-                  </span>
-                </div>
-                <div className="p-3 flex justify-between items-center">
-                  <div>
-                    <p className="font-semibold text-stone-800">
-                      FIR 2024/MSR/4102
-                    </p>
-                    <p className="text-[11px] text-stone-500">
-                      Jayalakshmipuram PS • Snatching
-                    </p>
-                  </div>
-                  <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-700">
-                    Matched MO
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="flex h-full flex-col items-center justify-center p-6 text-center text-stone-400">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-stone-100 mb-3">
-              <MessageSquareText className="size-6 text-stone-400" />
-            </div>
-            <p className="text-sm font-medium text-stone-600">
-              No Query Selected
-            </p>
-            <p className="mt-1 text-xs text-stone-400 max-w-xs">
-              Send a query from the chat panel to view structured extracted FIR
-              entities here.
-            </p>
-          </div>
-        )}
+        {renderDataTab()}
       </TabsContent>
 
-      {/* GRAPH TAB */}
       <TabsContent
         value="graph"
         className="min-h-0 flex-1 overflow-y-auto p-4 m-0"
       >
-        <div className="flex h-full flex-col rounded-2xl border border-stone-200/80 bg-stone-900 p-4 text-white relative overflow-hidden shadow-inner min-h-[350px]">
-          <div className="flex items-center justify-between border-b border-stone-800 pb-3 mb-4 z-10">
-            <div className="flex items-center gap-2">
-              <Network className="size-4 text-emerald-400" />
-              <span className="text-xs font-semibold tracking-wide">
-                SUBGRAPH TOPOLOGY
-              </span>
-            </div>
-            <span className="rounded bg-emerald-500/20 px-2 py-0.5 text-[10px] font-medium text-emerald-300 border border-emerald-500/30">
-              3 Nodes • 2 Edges
-            </span>
-          </div>
-
-          {/* Interactive Graph Canvas Mock */}
-          <div className="flex-1 flex items-center justify-center relative my-4">
-            <div className="absolute inset-0 bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:16px_16px] opacity-30" />
-
-            <div className="relative flex flex-col items-center gap-8 z-10 w-full max-w-xs">
-              <div className="flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold shadow-lg shadow-emerald-600/30 ring-4 ring-emerald-500/20 animate-pulse">
-                <User className="size-3.5" /> ACC_001 (Ravi K.)
-              </div>
-
-              <div className="h-8 w-0.5 bg-gradient-to-b from-emerald-500 to-amber-500 relative">
-                <span className="absolute -left-12 top-2 rounded bg-stone-800 px-1.5 py-0.5 text-[9px] text-stone-300 border border-stone-700 whitespace-nowrap">
-                  IMEI Link (94%)
-                </span>
-              </div>
-
-              <div className="flex items-center gap-4 sm:gap-6">
-                <div className="flex items-center gap-1.5 rounded-xl bg-stone-800 px-3 py-2 text-xs font-medium border border-stone-700">
-                  <User className="size-3.5 text-amber-400" /> ACC_007
-                </div>
-                <div className="flex items-center gap-1.5 rounded-xl bg-stone-800 px-3 py-2 text-xs font-medium border border-stone-700">
-                  <MapPin className="size-3.5 text-blue-400" /> Mandya Tower
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-auto border-t border-stone-800 pt-3 flex justify-between items-center text-[10px] text-stone-400 z-10">
-            <span>GraphRAG Louvain Algorithm</span>
-            <span className="text-emerald-400 flex items-center gap-1">
-              <Sparkles className="size-3" /> Live Graph
-            </span>
-          </div>
-        </div>
+        {renderGraphTab()}
       </TabsContent>
 
-      {/* REASONING TAB */}
       <TabsContent
         value="reasoning"
         className="min-h-0 flex-1 overflow-y-auto p-4 m-0"
@@ -413,51 +532,7 @@ export default function InvestigationPage() {
             <span>Explainable AI Audit Trace</span>
             <span className="text-emerald-600 font-bold">Court Defensible</span>
           </div>
-
-          <div className="relative pl-6 space-y-4 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-stone-200">
-            {[
-              {
-                title: "Entity Extraction",
-                desc: "Parsed named entities: Location='Mysuru', MO='Chain Snatching', Timeframe='14d'",
-                conf: "99.8%",
-              },
-              {
-                title: "Cypher Query Generation",
-                desc: "MATCH (c:Crime)-[:HAS_MO]->(m:MO) WHERE c.district = 'Mysuru' RETURN c",
-                conf: "100%",
-              },
-              {
-                title: "Vector Proximity Search",
-                desc: "Retrieved 4 embeddings with cosine similarity >= 0.85 from Crime DNA Index.",
-                conf: "94.2%",
-              },
-              {
-                title: "Spatio-Temporal Synthesis",
-                desc: "Aggregated results and formulated institutional intelligence advice.",
-                conf: "96.5%",
-              },
-            ].map((step, idx) => (
-              <div
-                key={idx}
-                className="relative rounded-xl border border-stone-200/80 bg-white p-3 shadow-2xs"
-              >
-                <span className="absolute -left-[23px] top-3 flex size-5 items-center justify-center rounded-full bg-emerald-600 text-[10px] font-bold text-white ring-4 ring-[#F9F9F8]">
-                  {idx + 1}
-                </span>
-                <div className="flex justify-between items-center mb-1">
-                  <h5 className="text-xs font-bold text-stone-800">
-                    {step.title}
-                  </h5>
-                  <span className="text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100">
-                    {step.conf}
-                  </span>
-                </div>
-                <p className="text-[11px] text-stone-500 leading-relaxed font-mono bg-stone-50 p-1.5 rounded border border-stone-100 mt-1">
-                  {step.desc}
-                </p>
-              </div>
-            ))}
-          </div>
+          {renderReasoningPath()}
         </div>
       </TabsContent>
     </Tabs>
@@ -465,9 +540,7 @@ export default function InvestigationPage() {
 
   return (
     <div className="flex h-full min-h-0 flex-1 flex-col xl:flex-row bg-[#F9F9F8] overflow-hidden">
-      {/* ===== CHAT PANEL ===== */}
       <div className="flex min-w-0 min-h-0 flex-1 flex-col bg-[#F9F9F8]">
-        {/* Mobile/Tablet Intelligence Header Bar */}
         <div className="flex xl:hidden items-center justify-between border-b border-stone-200/80 bg-white px-4 py-2.5 shadow-2xs">
           <div className="flex items-center gap-2">
             <span className="flex size-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -475,7 +548,6 @@ export default function InvestigationPage() {
               Investigation Copilot
             </span>
           </div>
-
           <Sheet open={mobileSheetOpen} onOpenChange={setMobileSheetOpen}>
             <SheetTrigger asChild>
               <button className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700 shadow-2xs active:scale-[0.98]">
@@ -503,7 +575,6 @@ export default function InvestigationPage() {
           </Sheet>
         </div>
 
-        {/* Chat Messages Area */}
         <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
           <div className="mx-auto max-w-3xl space-y-5">
             {messages.map((msg, i) => (
@@ -607,7 +678,6 @@ export default function InvestigationPage() {
           </div>
         </div>
 
-        {/* Chat Input Bar */}
         <div className="border-t border-stone-200/80 bg-white p-3 sm:p-4 shadow-lg shadow-stone-900/5">
           <div className="mx-auto max-w-3xl flex items-center gap-2 sm:gap-3">
             <div className="relative flex flex-1 items-center">
@@ -636,7 +706,6 @@ export default function InvestigationPage() {
         </div>
       </div>
 
-      {/* ===== DESKTOP RIGHT PANEL ===== */}
       <div className="hidden xl:flex w-80 2xl:w-96 h-full min-h-0 min-w-0 shrink-0 flex-col border-l border-stone-200/80 bg-white shadow-2xs">
         {renderPanelContent()}
       </div>
