@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const API_BASE = "/api";
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
@@ -27,7 +28,12 @@ export interface NLUResult {
 export interface GraphRAGResponse {
   type: string;
   response: string;
-  citations?: { fir_no: string; crime_type: string; district: string; score?: number }[];
+  citations?: {
+    fir_no: string;
+    crime_type: string;
+    district: string;
+    score?: number;
+  }[];
   confidence?: number;
   reasoning_path?: { title: string; desc: string; conf: string }[];
   intent?: string;
@@ -42,7 +48,13 @@ export interface GraphRAGResponse {
 export interface CrimeDNAResult {
   fir_no: string;
   mo_features: Record<string, string | number>;
-  matches: { fir_no: string; score: number; crime_type: string; district: string; shared_features: string[] }[];
+  matches: {
+    fir_no: string;
+    score: number;
+    crime_type: string;
+    district: string;
+    shared_features: string[];
+  }[];
   match_count: number;
   pattern_detected: boolean;
   pattern_details: any;
@@ -50,8 +62,23 @@ export interface CrimeDNAResult {
 }
 
 export interface NetworkResult {
-  nodes: { id: string; label: string; type: string; color: string; size: number; x: number; y: number }[];
-  edges: { source: string; target: string; type: string; dashes: boolean; color: string; width: number }[];
+  nodes: {
+    id: string;
+    label: string;
+    type: string;
+    color: string;
+    size: number;
+    x: number;
+    y: number;
+  }[];
+  edges: {
+    source: string;
+    target: string;
+    type: string;
+    dashes: boolean;
+    color: string;
+    width: number;
+  }[];
 }
 
 export interface ForecastResult {
@@ -64,8 +91,21 @@ export interface ForecastResult {
 }
 
 export interface SimilarCasesResult {
-  current_case: { fir_no: string; crime_type: string; district: string; narrative_text: string };
-  similar_cases: { fir_no: string; score: number; crime_type: string; district: string; date_filed: string; status: string; shared_mo_features: string[] }[];
+  current_case: {
+    fir_no: string;
+    crime_type: string;
+    district: string;
+    narrative_text: string;
+  };
+  similar_cases: {
+    fir_no: string;
+    score: number;
+    crime_type: string;
+    district: string;
+    date_filed: string;
+    status: string;
+    shared_mo_features: string[];
+  }[];
   count: number;
   solved_rate: number;
   recommended_techniques: { technique: string; used_in: number }[];
@@ -110,10 +150,18 @@ export interface AlertData {
   acknowledged: boolean;
 }
 
-export async function queryGraphRAG(queryText: string, role?: string, jurisdiction?: string): Promise<GraphRAGResponse> {
+export async function queryGraphRAG(
+  queryText: string,
+  role?: string,
+  jurisdiction?: string,
+): Promise<GraphRAGResponse> {
   return request("/graphrag", {
     method: "POST",
-    body: JSON.stringify({ query: queryText, user_role: role || "investigator", jurisdiction: jurisdiction || "" }),
+    body: JSON.stringify({
+      query: queryText,
+      user_role: role || "investigator",
+      jurisdiction: jurisdiction || "",
+    }),
   });
 }
 
@@ -138,14 +186,20 @@ export async function getNetwork(query: string): Promise<NetworkResult> {
   });
 }
 
-export async function getForecast(crimeType: string, district: string, days?: number): Promise<ForecastResult> {
+export async function getForecast(
+  crimeType: string,
+  district: string,
+  days?: number,
+): Promise<ForecastResult> {
   return request("/forecast", {
     method: "POST",
     body: JSON.stringify({ crime_type: crimeType, district, days: days || 30 }),
   });
 }
 
-export async function findSimilarCases(firNo: string): Promise<SimilarCasesResult> {
+export async function findSimilarCases(
+  firNo: string,
+): Promise<SimilarCasesResult> {
   return request("/similar-cases", {
     method: "POST",
     body: JSON.stringify({ fir_no: firNo }),
@@ -168,6 +222,8 @@ export async function getAlerts(): Promise<AlertData[]> {
   return request("/alerts");
 }
 
-export async function getForecastSummary(): Promise<{ district: string; crime_type: string; risk: string; next_7: number }[]> {
+export async function getForecastSummary(): Promise<
+  { district: string; crime_type: string; risk: string; next_7: number }[]
+> {
   return request("/forecast/summary");
 }

@@ -199,28 +199,30 @@ export default function InvestigationPage() {
     const path = selectedQueryData?.reasoning_path;
     if (!path || path.length === 0) {
       return (
-        <div className="flex h-full flex-col items-center justify-center p-6 text-center text-stone-400">
+        <div className="flex h-full flex-col items-center justify-center p-6 text-center text-muted-foreground">
           <p className="text-xs">Send a query to see the AI audit trace.</p>
         </div>
       );
     }
     return (
-      <div className="relative pl-6 space-y-4 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-stone-200">
+      <div className="relative pl-6 space-y-4 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-muted/70">
         {path.map((step, idx) => (
           <div
             key={idx}
-            className="relative rounded-xl border border-stone-200/80 bg-white p-3 shadow-2xs"
+            className="relative rounded-xl border border-border bg-card p-3 shadow-2xs"
           >
-            <span className="absolute -left-[23px] top-3 flex size-5 items-center justify-center rounded-full bg-emerald-600 text-[10px] font-bold text-white ring-4 ring-[#F9F9F8]">
+            <span className="absolute left-[-23px] top-3 flex size-5 items-center justify-center rounded-full bg-emerald-600 text-[10px] font-bold text-white ring-4 ring-[#F9F9F8]">
               {idx + 1}
             </span>
             <div className="flex justify-between items-center mb-1">
-              <h5 className="text-xs font-bold text-stone-800">{step.title}</h5>
+              <h5 className="text-xs font-bold text-foreground">
+                {step.title}
+              </h5>
               <span className="text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100">
                 {step.conf}
               </span>
             </div>
-            <p className="text-[11px] text-stone-500 leading-relaxed font-mono bg-stone-50 p-1.5 rounded border border-stone-100 mt-1">
+            <p className="text-[11px] text-muted-foreground leading-relaxed font-mono bg-muted p-1.5 rounded border border-border mt-1">
               {step.desc}
             </p>
           </div>
@@ -234,7 +236,7 @@ export default function InvestigationPage() {
     const edges = networkData?.edges || [];
     if (nodes.length === 0) {
       return (
-        <div className="flex h-full flex-col items-center justify-center p-6 text-center text-stone-400">
+        <div className="flex h-full flex-col items-center justify-center p-6 text-center text-muted-foreground">
           <Network className="size-8 mb-2" />
           <p className="text-xs font-medium">No graph data</p>
           <p className="mt-1 text-[11px]">
@@ -244,7 +246,7 @@ export default function InvestigationPage() {
       );
     }
     return (
-      <div className="flex h-full flex-col rounded-2xl border border-stone-200/80 bg-stone-900 p-4 text-white relative overflow-hidden shadow-inner min-h-[350px]">
+      <div className="flex h-full flex-col rounded-2xl border border-border bg-stone-900 p-4 text-white relative overflow-hidden shadow-inner min-h-[350px]">
         <div className="flex items-center justify-between border-b border-stone-800 pb-3 mb-4 z-10">
           <div className="flex items-center gap-2">
             <Network className="size-4 text-emerald-400" />
@@ -257,7 +259,7 @@ export default function InvestigationPage() {
           </span>
         </div>
         <div className="flex-1 flex items-center justify-center relative my-4">
-          <div className="absolute inset-0 bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:16px_16px] opacity-30" />
+          <div className="absolute inset-0 bg-[radial-gradient(#334155_1px,transparent_1px)] bg-size-[16px_16px] opacity-30" />
           <div className="relative flex flex-col items-center gap-6 z-10 w-full max-w-xs">
             {nodes.slice(0, 1).map((node: any) => (
               <div
@@ -268,8 +270,8 @@ export default function InvestigationPage() {
               </div>
             ))}
             {edges.length > 0 && (
-              <div className="h-6 w-0.5 bg-gradient-to-b from-emerald-500 to-amber-500 relative">
-                <span className="absolute -left-16 top-1 rounded bg-stone-800 px-1.5 py-0.5 text-[9px] text-stone-300 border border-stone-700 whitespace-nowrap">
+              <div className="h-6 w-0.5 bg-linear-to-b from-emerald-500 to-amber-500 relative">
+                <span className="absolute -left-16 top-1 rounded bg-stone-800 px-1.5 py-0.5 text-[9px] text-muted-foreground border border-stone-700 whitespace-nowrap">
                   {edges[0].type} ({Math.round(edges[0].width * 50)}%)
                 </span>
               </div>
@@ -291,7 +293,7 @@ export default function InvestigationPage() {
             </div>
           </div>
         </div>
-        <div className="mt-auto border-t border-stone-800 pt-3 flex justify-between items-center text-[10px] text-stone-400 z-10">
+        <div className="mt-auto border-t border-stone-800 pt-3 flex justify-between items-center text-[10px] text-muted-foreground z-10">
           <span>GraphRAG Louvain Algorithm</span>
           <span className="text-emerald-400 flex items-center gap-1">
             <Sparkles className="size-3" /> Live Graph
@@ -304,14 +306,14 @@ export default function InvestigationPage() {
   const renderDataTab = () => {
     if (!selectedQueryData) {
       return (
-        <div className="flex h-full flex-col items-center justify-center p-6 text-center text-stone-400">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-stone-100 mb-3">
-            <MessageSquareText className="size-6 text-stone-400" />
+        <div className="flex h-full flex-col items-center justify-center p-6 text-center text-muted-foreground">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted mb-3">
+            <MessageSquareText className="size-6 text-muted-foreground" />
           </div>
-          <p className="text-sm font-medium text-stone-600">
+          <p className="text-sm font-medium text-muted-foreground">
             No Query Selected
           </p>
-          <p className="mt-1 text-xs text-stone-400 max-w-xs">
+          <p className="mt-1 text-xs text-muted-foreground max-w-xs">
             Send a query from the chat panel to view structured extracted FIR
             entities here.
           </p>
@@ -332,19 +334,21 @@ export default function InvestigationPage() {
           </p>
         </div>
         {citations.length > 0 && (
-          <div className="rounded-2xl border border-stone-200/80 bg-white p-4 shadow-2xs space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-stone-400">
+          <div className="rounded-2xl border border-border bg-card p-4 shadow-2xs space-y-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
               Retrieved Entity Records ({citations.length})
             </h4>
-            <div className="divide-y divide-stone-100 rounded-xl border border-stone-100 bg-stone-50/50 text-xs">
+            <div className="divide-y divide-border rounded-xl border border-border bg-muted/50 text-xs">
               {citations.map((cit, idx) => (
                 <div
                   key={idx}
                   className="p-3 flex justify-between items-center"
                 >
                   <div>
-                    <p className="font-semibold text-stone-800">{cit.fir_no}</p>
-                    <p className="text-[11px] text-stone-500">
+                    <p className="font-semibold text-foreground">
+                      {cit.fir_no}
+                    </p>
+                    <p className="text-[11px] text-muted-foreground">
                       {cit.district} &bull; {cit.crime_type}
                     </p>
                   </div>
@@ -361,16 +365,16 @@ export default function InvestigationPage() {
           </div>
         )}
         {selectedQueryData.confidence !== undefined && (
-          <div className="rounded-2xl border border-stone-200/80 bg-white p-4 shadow-2xs">
+          <div className="rounded-2xl border border-border bg-card p-4 shadow-2xs">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-medium text-stone-600">
+              <span className="font-medium text-muted-foreground">
                 Confidence Score
               </span>
               <span className="font-bold text-emerald-700">
                 {(selectedQueryData.confidence * 100).toFixed(1)}%
               </span>
             </div>
-            <div className="mt-2 h-2 w-full rounded-full bg-stone-100 overflow-hidden">
+            <div className="mt-2 h-2 w-full rounded-full bg-muted overflow-hidden">
               <div
                 className="h-full rounded-full bg-emerald-500 transition-all"
                 style={{
@@ -382,8 +386,8 @@ export default function InvestigationPage() {
         )}
         {forecastSummary.length > 0 &&
           selectedQueryData?.type === "forecast" && (
-            <div className="rounded-2xl border border-stone-200/80 bg-white p-4 shadow-2xs space-y-2">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-stone-400">
+            <div className="rounded-2xl border border-border bg-card p-4 shadow-2xs space-y-2">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                 Forecast Summary
               </h4>
               {forecastSummary
@@ -392,9 +396,9 @@ export default function InvestigationPage() {
                 .map((fs, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center justify-between text-xs p-2 rounded-lg bg-stone-50 border border-stone-100"
+                    className="flex items-center justify-between text-xs p-2 rounded-lg bg-muted border border-border"
                   >
-                    <span className="font-medium text-stone-700">
+                    <span className="font-medium text-foreground/80">
                       {fs.district} &bull; {fs.crime_type}
                     </span>
                     <span
@@ -416,8 +420,8 @@ export default function InvestigationPage() {
       onValueChange={setActiveTab}
       className="flex h-full min-h-0 flex-1 flex-col"
     >
-      <div className="border-b border-stone-200/80 bg-stone-100/50 p-2">
-        <TabsList className="grid w-full grid-cols-4 gap-1 bg-white/80 p-1 shadow-2xs rounded-xl border border-stone-200/60">
+      <div className="border-b border-border bg-muted/50 p-2">
+        <TabsList className="grid w-full grid-cols-4 gap-1 bg-card/80 p-1 shadow-2xs rounded-xl border border-border">
           {[
             { value: "stats", label: "Stats", icon: Activity },
             { value: "response", label: "Data", icon: MessageSquareText },
@@ -427,7 +431,7 @@ export default function InvestigationPage() {
             <TabsTrigger
               key={tab.value}
               value={tab.value}
-              className="flex items-center justify-center gap-1 rounded-lg px-2 py-1.5 text-xs font-medium text-stone-500 transition-all data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:shadow-xs"
+              className="flex items-center justify-center gap-1 rounded-lg px-2 py-1.5 text-xs font-medium text-muted-foreground transition-all data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:shadow-xs"
             >
               <tab.icon className="size-3.5 shrink-0" />
               <span className="truncate">{tab.label}</span>
@@ -445,7 +449,7 @@ export default function InvestigationPage() {
             {statCards.map((stat) => (
               <div
                 key={stat.label}
-                className="relative overflow-hidden rounded-2xl border border-stone-200/80 bg-white p-4 shadow-2xs transition-all hover:shadow-md hover:border-stone-300/80"
+                className="relative overflow-hidden rounded-2xl border border-border bg-card p-4 shadow-2xs transition-all hover:shadow-md hover:border-border"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div
@@ -453,18 +457,18 @@ export default function InvestigationPage() {
                   >
                     <stat.icon className="size-5" />
                   </div>
-                  <span className="inline-flex items-center rounded-full bg-stone-100 px-2.5 py-1 text-[10px] font-semibold text-stone-600 border border-stone-200/60">
+                  <span className="inline-flex items-center rounded-full bg-muted px-2.5 py-1 text-[10px] font-semibold text-muted-foreground border border-border">
                     {stat.change}
                   </span>
                 </div>
                 <div className="mt-3">
-                  <p className="text-xs font-medium text-stone-500">
+                  <p className="text-xs font-medium text-muted-foreground">
                     {stat.label}
                   </p>
-                  <p className="mt-0.5 text-2xl font-bold tracking-tight text-stone-900">
+                  <p className="mt-0.5 text-2xl font-bold tracking-tight text-foreground">
                     {stat.value}
                   </p>
-                  <p className="mt-1 text-[11px] text-stone-400 truncate">
+                  <p className="mt-1 text-[11px] text-muted-foreground truncate">
                     {stat.sub}
                   </p>
                 </div>
@@ -472,15 +476,15 @@ export default function InvestigationPage() {
             ))}
           </div>
 
-          <div className="rounded-2xl border border-stone-200/80 bg-white p-4 shadow-2xs">
+          <div className="rounded-2xl border border-border bg-card p-4 shadow-2xs">
             <div className="flex items-center justify-between mb-3">
-              <p className="text-xs font-bold uppercase tracking-wider text-stone-400 flex items-center gap-1.5">
+              <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
                 <Sparkles className="size-3.5 text-emerald-500" /> Recent
                 Activity Feed
               </p>
               <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
             </div>
-            <div className="space-y-2.5 divide-y divide-stone-100">
+            <div className="space-y-2.5 divide-y divide-border">
               {activity.map((act, i) => (
                 <div
                   key={i}
@@ -488,18 +492,18 @@ export default function InvestigationPage() {
                 >
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-semibold text-stone-800">
+                      <span className="text-xs font-semibold text-foreground">
                         {act.action}
                       </span>
                       <span className="rounded bg-emerald-50 px-1.5 py-0.5 text-[9px] font-bold text-emerald-700 uppercase tracking-wider border border-emerald-100">
                         {act.badge}
                       </span>
                     </div>
-                    <p className="mt-1 text-[11px] leading-relaxed text-stone-500 line-clamp-2">
+                    <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground line-clamp-2">
                       {act.detail}
                     </p>
                   </div>
-                  <span className="text-[10px] font-medium text-stone-400 shrink-0">
+                  <span className="text-[10px] font-medium text-muted-foreground shrink-0">
                     {act.time}
                   </span>
                 </div>
@@ -528,7 +532,7 @@ export default function InvestigationPage() {
         className="min-h-0 flex-1 overflow-y-auto p-4 m-0"
       >
         <div className="space-y-3">
-          <div className="rounded-xl bg-stone-100 p-3 text-xs text-stone-600 font-medium border border-stone-200/60 flex items-center justify-between">
+          <div className="rounded-xl bg-muted p-3 text-xs text-muted-foreground font-medium border border-border flex items-center justify-between">
             <span>Explainable AI Audit Trace</span>
             <span className="text-emerald-600 font-bold">Court Defensible</span>
           </div>
@@ -539,12 +543,12 @@ export default function InvestigationPage() {
   );
 
   return (
-    <div className="flex h-full min-h-0 flex-1 flex-col xl:flex-row bg-[#F9F9F8] overflow-hidden">
-      <div className="flex min-w-0 min-h-0 flex-1 flex-col bg-[#F9F9F8]">
-        <div className="flex xl:hidden items-center justify-between border-b border-stone-200/80 bg-white px-4 py-2.5 shadow-2xs">
+    <div className="flex h-full min-h-0 flex-1 flex-col xl:flex-row bg-background overflow-hidden">
+      <div className="flex min-w-0 min-h-0 flex-1 flex-col bg-background">
+        <div className="flex xl:hidden items-center justify-between border-b border-border bg-card px-4 py-2.5 shadow-2xs">
           <div className="flex items-center gap-2">
             <span className="flex size-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-xs font-bold text-stone-700">
+            <span className="text-xs font-bold text-foreground/80">
               Investigation Copilot
             </span>
           </div>
@@ -560,10 +564,10 @@ export default function InvestigationPage() {
             </SheetTrigger>
             <SheetContent
               side="right"
-              className="w-[85vw] sm:w-[400px] p-0 flex flex-col bg-[#F9F9F8]"
+              className="w-[85vw] sm:w-[400px] p-0 flex flex-col bg-background"
             >
-              <SheetHeader className="p-4 border-b border-stone-200 bg-white text-left">
-                <SheetTitle className="text-sm font-bold text-stone-800 flex items-center gap-2">
+              <SheetHeader className="p-4 border-b border-border bg-card text-left">
+                <SheetTitle className="text-sm font-bold text-foreground flex items-center gap-2">
                   <Shield className="size-4 text-emerald-600" /> KCI-OS
                   Intelligence Panel
                 </SheetTitle>
@@ -589,7 +593,7 @@ export default function InvestigationPage() {
                     className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full shadow-2xs ${
                       msg.role === "user"
                         ? "bg-emerald-600 text-white"
-                        : "bg-white text-emerald-600 border border-stone-200/80"
+                        : "bg-card text-emerald-600 border border-border"
                     }`}
                   >
                     {msg.role === "user" ? (
@@ -603,11 +607,11 @@ export default function InvestigationPage() {
                       className={`rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-2xs ${
                         msg.role === "user"
                           ? "bg-emerald-600 text-white rounded-tr-xs"
-                          : "border border-stone-200/80 bg-white text-stone-800 rounded-tl-xs"
+                          : "border border-border bg-card text-foreground rounded-tl-xs"
                       }`}
                     >
                       <div
-                        className="prose prose-sm max-w-none break-words"
+                        className="prose prose-sm max-w-none wrap-break-word"
                         dangerouslySetInnerHTML={{
                           __html: msg.content
                             .replace(
@@ -622,7 +626,7 @@ export default function InvestigationPage() {
                       />
                     </div>
                     <p
-                      className={`mt-1 text-[11px] font-medium text-stone-400 ${msg.role === "user" ? "text-right" : ""}`}
+                      className={`mt-1 text-[11px] font-medium text-muted-foreground ${msg.role === "user" ? "text-right" : ""}`}
                     >
                       {msg.timestamp}
                     </p>
@@ -634,10 +638,10 @@ export default function InvestigationPage() {
             {isTyping && (
               <div className="flex justify-start">
                 <div className="flex gap-3">
-                  <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-emerald-600 border border-stone-200/80 shadow-2xs">
+                  <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-card text-emerald-600 border border-border shadow-2xs">
                     <Bot className="size-4" />
                   </div>
-                  <div className="rounded-2xl rounded-tl-xs border border-stone-200/80 bg-white px-5 py-3.5 shadow-2xs">
+                  <div className="rounded-2xl rounded-tl-xs border border-border bg-card px-5 py-3.5 shadow-2xs">
                     <div className="flex items-center gap-1.5">
                       <span className="size-2 animate-bounce rounded-full bg-emerald-500 [animation-delay:0ms]" />
                       <span className="size-2 animate-bounce rounded-full bg-emerald-500 [animation-delay:150ms]" />
@@ -650,7 +654,7 @@ export default function InvestigationPage() {
 
             {messages.length === 1 && !isTyping && (
               <div className="pt-6">
-                <p className="mb-3 text-xs font-bold uppercase tracking-wider text-stone-400 flex items-center gap-1.5">
+                <p className="mb-3 text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
                   <Sparkles className="size-3.5 text-emerald-500" /> Suggested
                   Investigation Queries
                 </p>
@@ -659,15 +663,15 @@ export default function InvestigationPage() {
                     <button
                       key={s.label}
                       onClick={() => handleSend(s.label)}
-                      className="group flex items-center justify-between text-left rounded-xl border border-stone-200/80 bg-white p-3.5 text-xs font-medium text-stone-700 shadow-2xs transition-all duration-200 hover:border-emerald-300 hover:bg-emerald-50/50 hover:text-emerald-800 active:scale-[0.99]"
+                      className="group flex items-center justify-between text-left rounded-xl border border-border bg-card p-3.5 text-xs font-medium text-foreground/80 shadow-2xs transition-all duration-200 hover:border-emerald-300 hover:bg-emerald-50/50 hover:text-emerald-800 active:scale-[0.99]"
                     >
                       <span className="flex items-center gap-2.5 min-w-0 pr-2">
-                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-stone-100 text-stone-500 transition-colors group-hover:bg-emerald-100 group-hover:text-emerald-600">
+                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-colors group-hover:bg-emerald-100 group-hover:text-emerald-600">
                           <s.icon className="size-3.5" />
                         </span>
                         <span className="truncate">{s.label}</span>
                       </span>
-                      <ArrowRight className="size-3.5 shrink-0 text-stone-300 transition-all group-hover:translate-x-0.5 group-hover:text-emerald-600" />
+                      <ArrowRight className="size-3.5 shrink-0 text-muted-foreground transition-all group-hover:translate-x-0.5 group-hover:text-emerald-600" />
                     </button>
                   ))}
                 </div>
@@ -678,7 +682,7 @@ export default function InvestigationPage() {
           </div>
         </div>
 
-        <div className="border-t border-stone-200/80 bg-white p-3 sm:p-4 shadow-lg shadow-stone-900/5">
+        <div className="border-t border-border bg-card p-3 sm:p-4 shadow-lg shadow-stone-900/5">
           <div className="mx-auto max-w-3xl flex items-center gap-2 sm:gap-3">
             <div className="relative flex flex-1 items-center">
               <input
@@ -686,11 +690,11 @@ export default function InvestigationPage() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSend()}
                 placeholder="Ask anything about crime data in English or Kannada..."
-                className="h-11 w-full rounded-xl border border-stone-200/80 bg-stone-50/80 pl-4 pr-10 text-sm text-stone-800 placeholder-stone-400 outline-none transition-all duration-200 focus:border-emerald-500 focus:bg-white focus:ring-3 focus:ring-emerald-500/10 shadow-inner"
+                className="h-11 w-full rounded-xl border border-border bg-muted/80 pl-4 pr-10 text-sm text-foreground placeholder-muted-foreground outline-none transition-all duration-200 focus:border-emerald-500 focus:bg-card focus:ring-3 focus:ring-emerald-500/10 shadow-inner"
               />
               <button
                 title="Voice Query"
-                className="absolute right-2 flex h-8 w-8 items-center justify-center rounded-lg text-stone-400 transition-colors hover:bg-stone-200/60 hover:text-stone-600"
+                className="absolute right-2 flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted/60 hover:text-muted-foreground"
               >
                 <Mic className="size-4" />
               </button>
@@ -706,7 +710,7 @@ export default function InvestigationPage() {
         </div>
       </div>
 
-      <div className="hidden xl:flex w-80 2xl:w-96 h-full min-h-0 min-w-0 shrink-0 flex-col border-l border-stone-200/80 bg-white shadow-2xs">
+      <div className="hidden xl:flex w-80 2xl:w-96 h-full min-h-0 min-w-0 shrink-0 flex-col border-l border-border bg-card shadow-2xs">
         {renderPanelContent()}
       </div>
     </div>

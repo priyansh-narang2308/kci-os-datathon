@@ -169,8 +169,8 @@ export default function DashboardLayout() {
           </SidebarFooter>
         </Sidebar>
 
-        <SidebarInset className="bg-[#F9F9F8] min-w-0 flex-1 flex flex-col h-full max-h-full overflow-hidden">
-          <header className="flex h-14 shrink-0 items-center gap-3 border-b border-stone-200/80 bg-white/80 backdrop-blur-md px-4 sticky top-0 z-30">
+        <SidebarInset className="bg-background min-w-0 flex-1 flex flex-col h-full max-h-full overflow-hidden">
+          <header className="flex h-14 shrink-0 items-center gap-3 border-b border-border bg-background/80 backdrop-blur-md px-4 sticky top-0 z-30">
             <SidebarTrigger className="cursor-pointer" />
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Search className="size-4" />
