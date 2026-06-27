@@ -1,10 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
-import { useTheme } from "next-themes";
 import { Settings, Globe, Shield, Database, Sliders } from "lucide-react";
 
 export default function SettingsPage() {
-  const { theme, setTheme } = useTheme();
   const [config, setConfig] = useState({
     temperature: 0.3,
     maxResults: 10,
@@ -127,17 +125,6 @@ export default function SettingsPage() {
                 <option value="en">English</option>
                 <option value="kn">Kannada</option>
                 <option value="mixed">Code-Mixed</option>
-              </select>
-            </Field>
-            <Field label="Theme" desc="Dashboard appearance">
-              <select
-                value={theme}
-                onChange={(e) => setTheme(e.target.value)}
-                className="rounded-xl border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground/80 outline-none focus:border-emerald-500"
-              >
-                <option value="dark">Dark Emerald</option>
-                <option value="light">Light</option>
-                <option value="system">System</option>
               </select>
             </Field>
           </Section>
