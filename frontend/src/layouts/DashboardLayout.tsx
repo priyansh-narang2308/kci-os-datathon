@@ -34,10 +34,10 @@ import {
   ScrollText,
   Settings,
   ChevronDown,
-  Search,
-  Zap,
   Shield,
   LogOut,
+  Command,
+  Search,
 } from "lucide-react"
 import { useAuth } from "@/contexts/AuthContext"
 
@@ -225,14 +225,26 @@ export default function DashboardLayout() {
         <SidebarInset className="bg-background min-w-0 flex-1 flex flex-col h-full max-h-full overflow-hidden">
           <header className="flex h-14 shrink-0 items-center gap-3 border-b border-border bg-background/80 backdrop-blur-md px-4 sticky top-0 z-30">
             <SidebarTrigger className="cursor-pointer" />
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Search className="size-4" />
-              <span className="hidden sm:inline text-muted-foreground/60">Ask anything about crime data...</span>
+            
+            {/* Sleek Interactive Search Bar */}
+            <div className="relative flex-1 max-w-lg mx-1">
+              <div className="flex items-center gap-2.5 rounded-full bg-stone-100/90 border border-stone-200/80 px-3.5 py-1.5 text-sm transition-all focus-within:bg-white focus-within:ring-2 focus-within:ring-emerald-500/20 focus-within:border-emerald-500 shadow-2xs hover:bg-stone-100">
+                <Search className="size-4 text-emerald-600 shrink-0" />
+                <input
+                  type="text"
+                  placeholder="Search FIR records, suspect IDs, entities or Cypher patterns..."
+                  className="bg-transparent border-none outline-none w-full text-xs sm:text-sm text-stone-800 placeholder:text-stone-400 font-medium"
+                />
+                <kbd className="hidden sm:inline-flex h-5 items-center gap-0.5 rounded border border-stone-300/80 bg-white px-1.5 font-mono text-[10px] font-semibold text-stone-500 shadow-2xs">
+                  <Command className="size-2.5" /> K
+                </kbd>
+              </div>
             </div>
-            <div className="ml-auto flex items-center gap-2">
+
+            <div className="ml-auto flex items-center gap-2.5 shrink-0">
               <LanguageSelector variant="dark" />
-              <div className="hidden items-center gap-1.5 text-xs text-muted-foreground/50 sm:flex">
-                <Zap className="size-3" />
+              <div className="hidden items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-700 border border-emerald-500/20 sm:flex">
+                <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 <span>Live</span>
               </div>
             </div>
