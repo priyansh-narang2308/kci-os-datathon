@@ -10,14 +10,20 @@ import {
   Shield,
   Brain,
   CheckCircle2,
-  ArrowUpRight,
   BarChart3,
   MessageSquareText,
   Eye,
   Zap,
   GraduationCap,
+  LogOut,
+  LayoutDashboard,
 } from "lucide-react";
 import { motion, type Variants } from "motion/react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { Card, CardContent } from "@/components/ui/card";
+
+const MotionLink = motion(Link);
 
 const sectionVariants: Variants = {
   hidden: {},
@@ -273,10 +279,18 @@ function Upload({ className }: { className?: string }) {
 }
 
 export default function LandingPage() {
+  const navigate = useNavigate();
+  const { isAuthenticated, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
   return (
     <div className="font-sans antialiased">
       {/* ===== HERO ===== */}
-      <section className="relative isolate min-h-screen overflow-hidden bg-stone-100 text-emerald-950">
+      <section className="relative isolate min-h-screen overflow-hidden bg-background text-emerald-950">
         <motion.div
           className="relative flex min-h-screen w-full flex-col overflow-hidden px-7 py-4 sm:px-11 lg:px-14"
           initial="hidden"
@@ -324,7 +338,7 @@ export default function LandingPage() {
               )}
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <motion.button
                 variants={navItemVariants}
                 type="button"
@@ -334,14 +348,36 @@ export default function LandingPage() {
                 EN
                 <ChevronDown className="size-4" aria-hidden="true" />
               </motion.button>
-              <motion.a
-                variants={navItemVariants}
-                href="/dashboard"
-                className="group inline-flex min-h-10 items-center justify-center gap-2 rounded-sm bg-emerald-900 px-5 text-sm font-medium text-amber-50 shadow-[inset_0_1px_4px_2px_rgba(255,255,255,0.2),inset_0_-1px_4px_2px_rgba(0,0,0,0.2)] transition-[background-color,transform,box-shadow] duration-200 ease-out hover:bg-emerald-950 active:scale-[0.96]"
-              >
-                Open Dashboard
-                <ArrowRight className="size-4 transition-transform duration-200 ease-out group-hover:translate-x-0.5" />
-              </motion.a>
+              {isAuthenticated ? (
+                <>
+                  <MotionLink
+                    variants={navItemVariants}
+                    to="/dashboard"
+                    className="group inline-flex min-h-10 items-center justify-center gap-2 rounded-sm bg-emerald-900 px-5 text-sm font-medium text-amber-50 shadow-[inset_0_1px_4px_2px_rgba(255,255,255,0.2),inset_0_-1px_4px_2px_rgba(0,0,0,0.2)] transition-[background-color,transform,box-shadow] duration-200 ease-out hover:bg-emerald-950 active:scale-[0.96]"
+                  >
+                    <LayoutDashboard className="size-4" />
+                    Dashboard
+                  </MotionLink>
+                  <motion.button
+                    variants={navItemVariants}
+                    type="button"
+                    onClick={handleLogout}
+                    className="inline-flex min-h-10 items-center gap-1.5 text-sm font-medium text-emerald-950/70 transition-[opacity,transform] duration-200 ease-out hover:text-emerald-950 active:scale-[0.96]"
+                  >
+                    <LogOut className="size-4" />
+                    Sign out
+                  </motion.button>
+                </>
+              ) : (
+                <MotionLink
+                  variants={navItemVariants}
+                  to="/login"
+                  className="group inline-flex min-h-10 items-center justify-center gap-2 rounded-sm bg-emerald-900 px-5 text-sm font-medium text-amber-50 shadow-[inset_0_1px_4px_2px_rgba(255,255,255,0.2),inset_0_-1px_4px_2px_rgba(0,0,0,0.2)] transition-[background-color,transform,box-shadow] duration-200 ease-out hover:bg-emerald-950 active:scale-[0.96]"
+                >
+                  Sign in
+                  <ArrowRight className="size-4 transition-transform duration-200 ease-out group-hover:translate-x-0.5" />
+                </MotionLink>
+              )}
             </div>
           </motion.nav>
 
@@ -367,13 +403,13 @@ export default function LandingPage() {
                 variants={ctaVariants}
                 className="mt-6 flex items-center gap-4"
               >
-                <a
-                  href="/dashboard"
+                <Link
+                  to="/dashboard"
                   className="group inline-flex min-h-10 items-center border-b border-emerald-950 pb-1 text-md font-medium tracking-[-0.035em] text-emerald-950 transition-[opacity,transform] duration-200 ease-out hover:opacity-75 active:scale-[0.96]"
                 >
                   Launch Demo
                   <ArrowRight className="ml-1 size-4 -rotate-45 transition-transform duration-200 ease-out group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </a>
+                </Link>
                 <a
                   href="#capabilities"
                   className="group inline-flex min-h-10 items-center gap-1.5 text-sm font-medium text-emerald-950/60 transition-[opacity,transform] duration-200 ease-out hover:text-emerald-950 active:scale-[0.96]"
@@ -400,7 +436,7 @@ export default function LandingPage() {
       {/* ===== PLATFORM OVERVIEW ===== */}
       <section
         id="platform"
-        className="bg-stone-100 px-7 py-24 sm:px-11 lg:px-14"
+        className="bg-background px-7 py-24 sm:px-11 lg:px-14"
       >
         <div className="mx-auto max-w-7xl">
           <motion.div
@@ -458,7 +494,7 @@ export default function LandingPage() {
                 key={item.title}
                 custom={i}
                 variants={featureCardVariants}
-                className="group rounded-xl border border-emerald-900/10 bg-white/60 p-6 transition-all duration-300 hover:border-emerald-900/20 hover:bg-white/80 hover:shadow-sm"
+                className="group rounded-xl border border-emerald-900/10 bg-card/60 p-6 transition-all duration-300 hover:border-emerald-900/20 hover:bg-card/80 hover:shadow-sm"
               >
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-900/10 text-emerald-700 transition-colors duration-300 group-hover:bg-emerald-900/15">
                   <item.icon className="size-5" />
@@ -478,7 +514,7 @@ export default function LandingPage() {
       {/* ===== FIVE CORE ENGINES ===== */}
       <section
         id="capabilities"
-        className="bg-emerald-950 px-7 py-24 sm:px-11 lg:px-14"
+        className="bg-background px-7 py-24 sm:px-11 lg:px-14"
       >
         <div className="mx-auto max-w-7xl">
           <motion.div
@@ -489,14 +525,14 @@ export default function LandingPage() {
           >
             <motion.h2
               variants={fadeUpVariants}
-              className="text-3xl leading-[1.1] font-normal tracking-[-0.045em] text-emerald-50 sm:text-4xl lg:text-5xl"
+              className="text-3xl leading-[1.1] font-normal tracking-[-0.045em] text-foreground sm:text-4xl lg:text-5xl"
             >
               Built on{" "}
-              <span className="text-emerald-400">Five Core Engines</span>
+              <span className="text-emerald-600">Five Core Engines</span>
             </motion.h2>
             <motion.p
               variants={fadeUpVariants}
-              className="mt-5 text-sm leading-relaxed text-emerald-300/60"
+              className="mt-5 text-sm leading-relaxed text-muted-foreground"
             >
               Not 9 features done poorly — 5 engines done exceptionally well.
               Every engine is designed to work independently and together,
@@ -504,48 +540,44 @@ export default function LandingPage() {
             </motion.p>
           </motion.div>
 
-          <div className="mt-16 space-y-6">
+          <div className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {engines.map((engine, i) => (
               <motion.div
                 key={engine.title}
                 custom={i}
                 variants={featureCardVariants}
-                className="group relative overflow-hidden rounded-xl border border-emerald-800/30 bg-emerald-900/20 p-6 transition-all duration-300 hover:border-emerald-700/40 hover:bg-emerald-900/30 sm:p-8"
               >
-                <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-400/10 text-emerald-400">
-                    <engine.icon className="size-6" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3">
-                      <h3 className="text-lg font-medium text-emerald-50">
-                        {engine.title}
-                      </h3>
-                      <span className="rounded-full bg-emerald-400/10 px-2.5 py-0.5 text-[10px] font-medium tracking-wider text-emerald-400">
+                <Card className="group h-full transition-all duration-300 hover:border-emerald-400/40 hover:shadow-sm">
+                  <CardContent className="flex flex-col gap-3 p-5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex size-9 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700">
+                        <engine.icon className="size-5" />
+                      </div>
+                      <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-medium tracking-wider text-emerald-700">
                         {engine.tag}
                       </span>
                     </div>
-                    <p className="mt-2 max-w-2xl text-sm leading-relaxed text-emerald-300/60">
-                      {engine.description}
-                    </p>
-                    <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-2">
+                    <div>
+                      <h3 className="text-sm font-semibold text-foreground">
+                        {engine.title}
+                      </h3>
+                      <p className="mt-1 text-xs leading-relaxed text-muted-foreground line-clamp-3">
+                        {engine.description}
+                      </p>
+                    </div>
+                    <ul className="mt-auto flex flex-wrap gap-x-4 gap-y-1">
                       {engine.features.map((f) => (
                         <li
                           key={f}
-                          className="flex items-center gap-1.5 text-xs text-emerald-300/50"
+                          className="flex items-center gap-1 text-xs text-muted-foreground"
                         >
-                          <CheckCircle2 className="size-3 text-emerald-400/60" />
-                          {f}
+                          <CheckCircle2 className="size-3 text-emerald-500 shrink-0" />
+                          <span className="truncate">{f}</span>
                         </li>
                       ))}
                     </ul>
-                  </div>
-                  <div className="hidden shrink-0 self-center lg:block">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full border border-emerald-700/30 text-emerald-500/50 transition-all duration-300 group-hover:border-emerald-500/40 group-hover:text-emerald-400">
-                      <ArrowUpRight className="size-4" />
-                    </div>
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
               </motion.div>
             ))}
           </div>
@@ -553,7 +585,7 @@ export default function LandingPage() {
       </section>
 
       {/* ===== HOW IT WORKS ===== */}
-      <section className="bg-stone-100 px-7 py-24 sm:px-11 lg:px-14">
+      <section className="bg-background px-7 py-24 sm:px-11 lg:px-14">
         <div className="mx-auto max-w-7xl">
           <motion.div
             className="mx-auto max-w-3xl text-center"
@@ -613,7 +645,7 @@ export default function LandingPage() {
       {/* ===== WHY KCI-OS ===== */}
       <section
         id="architecture"
-        className="bg-emerald-950 px-7 py-24 sm:px-11 lg:px-14"
+        className="bg-background px-7 py-24 sm:px-11 lg:px-14"
       >
         <div className="mx-auto max-w-7xl">
           <motion.div
@@ -625,10 +657,10 @@ export default function LandingPage() {
 
             <motion.h2
               variants={fadeUpVariants}
-              className="text-3xl leading-[1.1] font-normal tracking-[-0.045em] text-emerald-50 sm:text-4xl lg:text-5xl"
+              className="text-3xl leading-[1.1] font-normal tracking-[-0.045em] text-foreground sm:text-4xl lg:text-5xl"
             >
               Beyond the{" "}
-              <span className="text-emerald-400">Standard Dashboard</span>
+              <span className="text-emerald-600">Standard Dashboard</span>
             </motion.h2>
           </motion.div>
 
@@ -684,27 +716,30 @@ export default function LandingPage() {
                 key={row.label}
                 custom={i}
                 variants={featureCardVariants}
-                className="rounded-xl border border-emerald-800/20 bg-emerald-900/10 p-5"
               >
-                <p className="text-xs font-medium tracking-wider text-emerald-400/60">
-                  {row.label}
-                </p>
-                <div className="mt-3 grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-xs text-emerald-300/40">KCI-OS</p>
-                    <p className="mt-1 text-sm leading-snug text-emerald-100">
-                      {row.us}
+                <Card className="h-full transition-all duration-300 hover:border-emerald-400/40 hover:shadow-sm">
+                  <CardContent className="p-4">
+                    <p className="text-xs font-medium tracking-wider text-muted-foreground">
+                      {row.label}
                     </p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-emerald-300/40">
-                      Typical Approach
-                    </p>
-                    <p className="mt-1 text-sm leading-snug text-emerald-300/40">
-                      {row.them}
-                    </p>
-                  </div>
-                </div>
+                    <div className="mt-3 grid grid-cols-2 gap-3">
+                      <div>
+                        <p className="text-xs font-medium text-emerald-600">KCI-OS</p>
+                        <p className="mt-0.5 text-sm leading-snug text-foreground">
+                          {row.us}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs font-medium text-muted-foreground">
+                          Typical Approach
+                        </p>
+                        <p className="mt-0.5 text-sm leading-snug text-muted-foreground">
+                          {row.them}
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </motion.div>
             ))}
           </motion.div>
@@ -727,15 +762,15 @@ export default function LandingPage() {
         >
           <motion.h2
             variants={fadeUpVariants}
-            className="text-3xl leading-[1.1] font-normal tracking-[-0.045em] text-black sm:text-4xl lg:text-5xl"
+            className="text-3xl leading-[1.1] font-normal tracking-[-0.045em] text-foreground sm:text-4xl lg:text-5xl"
           >
             From FIR to Intelligence
             <br />
-            <span className="text-emerald-300">in 60 Seconds.</span>
+            <span className="text-emerald-600">in 60 Seconds.</span>
           </motion.h2>
           <motion.p
             variants={fadeUpVariants}
-            className="mt-5 text-sm leading-relaxed text-black"
+            className="mt-5 text-sm leading-relaxed text-foreground"
           >
             See how KCI-OS transforms the way Karnataka State Police
             investigates crime. Upload an FIR and watch the entire system
@@ -745,41 +780,41 @@ export default function LandingPage() {
             variants={ctaVariants}
             className="mt-8 flex items-center justify-center gap-4"
           >
-            <a
-              href="/dashboard"
+            <Link
+              to="/dashboard"
               className="group inline-flex min-h-10 items-center gap-2 rounded-sm bg-amber-50 px-6 text-sm font-medium text-emerald-950 shadow-[inset_0_1px_4px_2px_rgba(255,255,255,0.3),inset_0_-1px_4px_2px_rgba(0,0,0,0.15)] transition-all duration-200 ease-out hover:bg-white hover:shadow-[inset_0_1px_4px_2px_rgba(255,255,255,0.4),inset_0_-1px_4px_2px_rgba(0,0,0,0.2)] active:scale-[0.96]"
             >
               Launch Live Demo
               <ArrowRight className="size-4 transition-transform duration-200 ease-out group-hover:translate-x-0.5" />
-            </a>
+            </Link>
           </motion.div>
         </motion.div>
       </section>
 
       {/* ===== FOOTER ===== */}
-      <footer className="border-t border-emerald-900/10 bg-emerald-950 px-7 py-12 sm:px-11 lg:px-14">
+      <footer className="border-t border-border bg-background px-7 py-12 sm:px-11 lg:px-14">
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
-            <div className="flex items-center gap-2 text-sm font-medium text-emerald-300/50">
+            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
               <Shield className="size-4" />
               KCI-OS — Karnataka Crime Intelligence Operating System
             </div>
-            <div className="flex items-center gap-6 text-xs text-emerald-400/30">
+            <div className="flex items-center gap-6 text-xs text-muted-foreground">
               <a
                 href="#"
-                className="transition-colors hover:text-emerald-300/50"
+                className="transition-colors hover:text-foreground"
               >
                 Privacy
               </a>
               <a
                 href="#"
-                className="transition-colors hover:text-emerald-300/50"
+                className="transition-colors hover:text-foreground"
               >
                 Terms
               </a>
               <a
                 href="#"
-                className="transition-colors hover:text-emerald-300/50"
+                className="transition-colors hover:text-foreground"
               >
                 Documentation
               </a>

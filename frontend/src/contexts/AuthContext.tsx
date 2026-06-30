@@ -47,10 +47,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       body: JSON.stringify({ username, password }),
     })
     if (!res.ok) {
-      const err = await res.json()
-      throw new Error(err.error || "Login failed")
+      let msg = "Login failed"
+      try { const err = await res.json(); msg = err.error || msg } catch { msg = res.statusText || msg }
+      throw new Error(msg)
     }
     const data = await res.json()
+    if (!data.token) throw new Error("No token received")
     localStorage.setItem("kci_os_token", data.token)
     setToken(data.token)
     setUser(data.user)
@@ -63,8 +65,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       body: JSON.stringify({ role }),
     })
-    if (!res.ok) return
+    if (!res.ok) {
+      let msg = "Failed to switch role"
+      try { const err = await res.json(); msg = err.error || msg } catch { msg = res.statusText || msg }
+      throw new Error(msg)
+    }
     const data = await res.json()
+    if (!data.token) throw new Error("No token received")
     localStorage.setItem("kci_os_token", data.token)
     setToken(data.token)
     setUser(data.user)

@@ -134,13 +134,13 @@ export default function TrendsPage() {
                       <div className="rounded-lg bg-muted p-2 border border-border text-center">
                         <p className="text-[9px] text-muted-foreground">MAPE</p>
                         <p className="text-xs font-bold text-foreground">
-                          {(forecast.model_stats.mape * 100).toFixed(1)}%
+                          {forecast.model_stats.mape != null ? (forecast.model_stats.mape * 100).toFixed(1) : "N/A"}%
                         </p>
                       </div>
                       <div className="rounded-lg bg-muted p-2 border border-border text-center">
                         <p className="text-[9px] text-muted-foreground">MSE</p>
                         <p className="text-xs font-bold text-foreground">
-                          {forecast.model_stats.mse.toFixed(2)}
+                          {forecast.model_stats.mse != null ? forecast.model_stats.mse.toFixed(2) : "N/A"}
                         </p>
                       </div>
                       <div className="rounded-lg bg-muted p-2 border border-border text-center">
@@ -148,10 +148,7 @@ export default function TrendsPage() {
                           Direction
                         </p>
                         <p className="text-xs font-bold text-foreground">
-                          {(
-                            forecast.model_stats.direction_accuracy * 100
-                          ).toFixed(0)}
-                          %
+                          {forecast.model_stats.direction_accuracy != null ? (forecast.model_stats.direction_accuracy * 100).toFixed(0) : "N/A"}%
                         </p>
                       </div>
                     </div>
