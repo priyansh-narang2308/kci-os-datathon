@@ -43,7 +43,43 @@ function detectLanguage(text) {
   return "en";
 }
 
-function processQuery(text) {
+function extractSlotsFromHistory(history, missingSlots) {
+  if (!history || !Array.isArray(history) || history.length === 0) return {};
+  const filled = {};
+  const userMessages = history.filter(m => m.role === "user").map(m => m.content);
+  for (const slot of missingSlots) {
+    for (const msg of userMessages) {
+      const lower = msg.toLowerCase();
+      // Target entity: look for names, IDs
+      if (slot === "target_entity") {
+        const idMatch = msg.match(/ACC_\d{4}|FIR_\d{4}_\d{4}/);
+        if (idMatch) { filled[slot] = idMatch[0]; break; }
+        // Check for name patterns (2-3 word names)
+        const nameMatch = msg.match(/(?:around|for|about|investigate)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,2})/);
+        if (nameMatch) { filled[slot] = nameMatch[1]; break; }
+      }
+      // District: extract from user messages
+      if (slot === "district") {
+        const districts = ["Bengaluru Urban","Bengaluru","Belagavi","Kalaburagi","Mysuru","Mangaluru","Hubli-Dharwad","Hubli","Dharwad"];
+        for (const d of districts) {
+          if (lower.includes(d.toLowerCase())) { filled[slot] = d; break; }
+        }
+        if (filled[slot]) break;
+      }
+      // Crime type
+      if (slot === "crime_type") {
+        const types = ["theft","burglary","robbery","assault","cheating","cyber_fraud","chain_snatching","drug_offense","chain-snatching"];
+        for (const t of types) {
+          if (lower.includes(t.replace(/_/g, " ").replace(/-/g, " "))) { filled[slot] = t; break; }
+        }
+        if (filled[slot]) break;
+      }
+    }
+  }
+  return filled;
+}
+
+function processQuery(text, history) {
   const lang = detectLanguage(text);
 
   let result;
@@ -60,7 +96,20 @@ function processQuery(text) {
 
   // Validate required slots
   const required = REQUIRED_SLOTS[result.intent] || [];
-  const missingSlots = required.filter((slot) => !result.slots[slot]);
+  let missingSlots = required.filter((slot) => !result.slots[slot]);
+
+  // Try to fill missing slots from conversation history (multi-turn context)
+  if (missingSlots.length > 0 && history) {
+    const contextSlots = extractSlotsFromHistory(history, missingSlots);
+    for (const [key, val] of Object.entries(contextSlots)) {
+      if (!result.slots[key] && val) {
+        result.slots[key] = val;
+        result.context_resolved = result.context_resolved || [];
+        result.context_resolved.push(key);
+      }
+    }
+    missingSlots = required.filter((slot) => !result.slots[slot]);
+  }
 
   // Handle missing slots
   if (missingSlots.length > 0) {
@@ -87,6 +136,8 @@ function generateClarification(intent, missingSlots) {
     fir_numbers:
       "Please provide the FIR numbers you want to compare (e.g., 2024/MSR/1234 and 2024/MSR/5678).",
     fir_number: "Please provide the FIR number to analyze.",
+    district: "Which district are you interested in? (e.g., Bengaluru Urban, Mysuru, Belagavi)",
+    crime_type: "Which crime type? (e.g., theft, burglary, cyber_fraud, chain_snatching)",
   };
 
   for (const slot of missingSlots) {

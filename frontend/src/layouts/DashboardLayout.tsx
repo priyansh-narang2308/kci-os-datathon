@@ -43,32 +43,44 @@ import { useAuth } from "@/contexts/AuthContext"
 
 const NAV_ITEMS = [
   {
-    group: "Primary",
-    roles: ["admin", "investigator", "supervisor"],
+    group: "Investigation",
+    roles: ["investigator", "supervisor", "admin"],
     items: [
       { label: "Investigation", href: "/dashboard", icon: MessageSquareText },
     ],
   },
   {
-    group: "Intelligence",
-    roles: ["admin", "investigator", "analyst", "supervisor"],
+    group: "Network",
+    roles: ["investigator", "analyst", "admin"],
     items: [
       { label: "Network Analysis", href: "/dashboard/network", icon: Network },
+    ],
+  },
+  {
+    group: "Analysis",
+    roles: ["analyst", "admin"],
+    items: [
       { label: "Hotspots", href: "/dashboard/hotspots", icon: Map },
+    ],
+  },
+  {
+    group: "Monitoring",
+    roles: ["investigator", "analyst", "supervisor", "admin"],
+    items: [
       { label: "Alerts", href: "/dashboard/alerts", icon: Bell },
     ],
   },
   {
-    group: "Data",
-    roles: ["admin", "investigator", "analyst", "supervisor", "policymaker"],
+    group: "Intelligence",
+    roles: ["analyst", "supervisor", "policymaker", "admin"],
     items: [
       { label: "Trends", href: "/dashboard/trends", icon: TrendingUp },
       { label: "Audit Log", href: "/dashboard/audit", icon: ScrollText },
     ],
   },
   {
-    group: "System",
-    roles: ["admin", "supervisor", "policymaker"],
+    group: "Administration",
+    roles: ["supervisor", "policymaker", "admin"],
     items: [
       { label: "Settings", href: "/dashboard/settings", icon: Settings },
     ],

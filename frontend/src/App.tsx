@@ -33,6 +33,17 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>
 }
 
+function RoleRoute({ children, allowedRoles }: { children: React.ReactNode; allowedRoles: string[] }) {
+  const { user } = useAuth()
+  const userRole = user?.role || ""
+
+  if (!allowedRoles.includes(userRole)) {
+    return <Navigate to="/dashboard" replace />
+  }
+
+  return <>{children}</>
+}
+
 function LandingRoute() {
   const { isAuthenticated, isLoading } = useAuth()
   if (isLoading) return null
@@ -57,13 +68,13 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
-      { index: true, element: <InvestigationPage /> },
-      { path: "network", element: <NetworkPage /> },
-      { path: "hotspots", element: <HotspotsPage /> },
-      { path: "alerts", element: <AlertsPage /> },
-      { path: "trends", element: <TrendsPage /> },
-      { path: "audit", element: <AuditPage /> },
-      { path: "settings", element: <SettingsPage /> },
+      { index: true, element: <RoleRoute allowedRoles={["investigator","supervisor","admin"]}><InvestigationPage /></RoleRoute> },
+      { path: "network", element: <RoleRoute allowedRoles={["investigator","analyst","admin"]}><NetworkPage /></RoleRoute> },
+      { path: "hotspots", element: <RoleRoute allowedRoles={["analyst","admin"]}><HotspotsPage /></RoleRoute> },
+      { path: "alerts", element: <RoleRoute allowedRoles={["investigator","analyst","supervisor","admin"]}><AlertsPage /></RoleRoute> },
+      { path: "trends", element: <RoleRoute allowedRoles={["analyst","supervisor","policymaker","admin"]}><TrendsPage /></RoleRoute> },
+      { path: "audit", element: <RoleRoute allowedRoles={["analyst","supervisor","policymaker","admin"]}><AuditPage /></RoleRoute> },
+      { path: "settings", element: <RoleRoute allowedRoles={["supervisor","policymaker","admin"]}><SettingsPage /></RoleRoute> },
     ],
   },
 ])

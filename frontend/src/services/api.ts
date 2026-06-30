@@ -38,11 +38,13 @@ export interface NLUResult {
 export interface GraphRAGResponse {
   type: string;
   response: string;
+  fact_mode?: string;
   citations?: {
     fir_no: string;
     crime_type: string;
     district: string;
     score?: number;
+    is_verified?: boolean;
   }[];
   confidence?: number;
   reasoning_path?: { title: string; desc: string; conf: string }[];
@@ -162,6 +164,7 @@ export interface AlertData {
 
 export async function queryGraphRAG(
   queryText: string,
+  history?: { role: string; content: string }[],
   role?: string,
   jurisdiction?: string,
 ): Promise<GraphRAGResponse> {
@@ -169,10 +172,47 @@ export async function queryGraphRAG(
     method: "POST",
     body: JSON.stringify({
       query: queryText,
+      history: history || [],
       user_role: role || "investigator",
       jurisdiction: jurisdiction || "",
     }),
   });
+}
+
+export interface FIRIngestPayload {
+  crime_type: string;
+  district: string;
+  description?: string;
+  suspect_name?: string;
+  victim_name?: string;
+  location?: { lat: number; lng: number };
+}
+
+export interface FIRIngestResponse {
+  success: boolean;
+  fir_no: string;
+  fir: any;
+  steps: { step: string; status: string; detail: string }[];
+  alert: any;
+  early_warning: any;
+  total_firs: number;
+}
+
+export async function ingestFIR(payload: FIRIngestPayload): Promise<FIRIngestResponse> {
+  return request("/fir/ingest", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function exportPDF(messages: { role: string; content: string; citations?: any[]; timestamp?: string }[], officer_name?: string, fir_no?: string): Promise<Blob> {
+  const res = await fetch(`${API_BASE}/export/pdf`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...getAuthHeaders() },
+    body: JSON.stringify({ messages, officer_name, fir_no }),
+  });
+  if (!res.ok) throw new Error("PDF export failed");
+  return res.blob();
 }
 
 export async function processNLU(queryText: string): Promise<NLUResult> {
