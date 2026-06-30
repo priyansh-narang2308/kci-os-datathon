@@ -14,10 +14,11 @@ import {
   SidebarMenuItem,
   SidebarProvider,
   SidebarTrigger,
-  SidebarInset,
   SidebarSeparator,
+  SidebarInset,
 } from "@/components/ui/sidebar"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { LanguageSelector } from "@/components/LanguageSelector"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -217,6 +218,7 @@ export default function DashboardLayout() {
               <span className="hidden sm:inline text-muted-foreground/60">Ask anything about crime data...</span>
             </div>
             <div className="ml-auto flex items-center gap-2">
+              <LanguageSelector variant="dark" />
               <div className="hidden items-center gap-1.5 text-xs text-muted-foreground/50 sm:flex">
                 <Zap className="size-3" />
                 <span>Live</span>

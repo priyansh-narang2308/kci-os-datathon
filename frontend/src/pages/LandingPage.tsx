@@ -3,7 +3,6 @@
 import {
   ArrowRight,
   ChevronDown,
-  Globe2,
   Network,
   FileSearch,
   Map,
@@ -22,6 +21,7 @@ import { motion, type Variants } from "motion/react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent } from "@/components/ui/card";
+import { LanguageSelector } from "@/components/LanguageSelector";
 
 const MotionLink = motion(Link);
 
@@ -339,15 +339,7 @@ export default function LandingPage() {
             </div>
 
             <div className="flex items-center gap-3">
-              <motion.button
-                variants={navItemVariants}
-                type="button"
-                className="hidden min-h-10 items-center gap-1.5 text-sm font-medium text-emerald-950 transition-[opacity,transform] duration-200 ease-out hover:opacity-90 active:scale-[0.96] sm:inline-flex"
-              >
-                <Globe2 className="size-4" aria-hidden="true" />
-                EN
-                <ChevronDown className="size-4" aria-hidden="true" />
-              </motion.button>
+              <LanguageSelector variant="light" className="hidden sm:inline-flex" />
               {isAuthenticated ? (
                 <>
                   <MotionLink
