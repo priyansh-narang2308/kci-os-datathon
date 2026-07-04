@@ -75,22 +75,12 @@ function protect(...roles) {
   return [authenticateToken, requireRole(...roles)];
 }
 
-const FIRS_PATH = path.join(
-  __dirname,
-  "..",
-  "data",
-  "synthetic",
-  "output",
-  "firs.json",
-);
-const EDGES_PATH = path.join(
-  __dirname,
-  "..",
-  "data",
-  "synthetic",
-  "output",
-  "edges.json",
-);
+const FIRS_PATH = fs.existsSync(path.join(__dirname, "data", "synthetic", "output", "firs.json"))
+  ? path.join(__dirname, "data", "synthetic", "output", "firs.json")
+  : path.join(__dirname, "..", "data", "synthetic", "output", "firs.json");
+const EDGES_PATH = fs.existsSync(path.join(__dirname, "data", "synthetic", "output", "edges.json"))
+  ? path.join(__dirname, "data", "synthetic", "output", "edges.json")
+  : path.join(__dirname, "..", "data", "synthetic", "output", "edges.json");
 
 const firs = JSON.parse(fs.readFileSync(FIRS_PATH, "utf-8"));
 const edgesData = fs.existsSync(EDGES_PATH)
