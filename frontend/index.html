@@ -7,6 +7,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>KCI-OS - Karnataka Crime Intelligence Operating System</title>
 
+  <style id="gt-overrides">
+    body { top: 0px !important; position: static !important; min-height: 100vh; }
+    iframe.goog-te-banner-frame,
+    iframe[src*="translate"],
+    .skiptranslate > iframe { display: none !important; visibility: hidden !important; height: 0 !important; }
+    .goog-te-gadget-icon, #goog-gt-tt, .goog-tooltip, .goog-te-balloon-frame { display: none !important; }
+    .goog-text-highlight { background: none !important; box-shadow: none !important; }
+    #google_translate_element { display: none !important; }
+    html { margin-top: 0px !important; }
+  </style>
+  <script>
+    (function(){
+      var lang = localStorage.getItem("kci_lang");
+      if (lang === "kn") {
+        document.cookie = "googtrans=/en/kn; path=/;";
+      } else {
+        document.cookie = "googtrans=/en/en; path=/;";
+      }
+    })();
+  </script>
+
   </head>
   <body>
     <div id="root"></div>

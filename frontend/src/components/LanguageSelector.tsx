@@ -51,13 +51,30 @@ export function LanguageSelector({
       const style = document.createElement("style");
       style.id = "google-translate-overrides";
       style.innerHTML = `
-        body { top: 0px !important; position: relative !important; }
-        .goog-te-banner-frame.skiptranslate, .goog-te-gadget-icon, #goog-gt-tt, .goog-tooltip, .goog-te-balloon-frame { display: none !important; }
+        body { top: 0px !important; position: static !important; min-height: 100vh; }
+        iframe.goog-te-banner-frame,
+        iframe[src*="translate"],
+        .skiptranslate > iframe { display: none !important; visibility: hidden !important; height: 0 !important; }
+        .goog-te-gadget-icon, #goog-gt-tt, .goog-tooltip, .goog-te-balloon-frame { display: none !important; }
         .goog-text-highlight { background: none !important; box-shadow: none !important; }
         #google_translate_element { display: none !important; }
+        html { margin-top: 0px !important; }
       `;
       document.head.appendChild(style);
     }
+
+    // MutationObserver: re-hide any Google Translate injected elements
+    const observer = new MutationObserver(() => {
+      const banner = document.querySelector("iframe.goog-te-banner-frame");
+      if (banner) (banner as HTMLElement).style.display = "none";
+      const body = document.body;
+      if (body.style.top && body.style.top !== "0px") {
+        body.style.top = "0px";
+      }
+    });
+    observer.observe(document.body, { attributes: true, childList: true, subtree: true });
+
+    return () => observer.disconnect();
 
     if (!document.getElementById("google_translate_element")) {
       const div = document.createElement("div");
