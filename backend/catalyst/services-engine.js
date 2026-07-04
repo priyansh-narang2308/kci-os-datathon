@@ -499,7 +499,6 @@ class Catalyst26ServicesEngine {
     };
   }
 
-
   async verifyAll26Capabilities() {
     const results = [];
     for (let id = 1; id <= 26; id++) {
