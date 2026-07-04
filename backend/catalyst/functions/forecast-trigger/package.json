@@ -1,0 +1,9 @@
+{
+  "name": "forecast-trigger",
+  "version": "1.0.0",
+  "description": "KCI-OS — Scheduled forecasting: hotspots, heatmaps, early warnings",
+  "main": "index.js",
+  "dependencies": {
+    "@zmc/catalyst": "latest"
+  }
+}

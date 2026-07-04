@@ -1,10 +1,3 @@
-/**
- * KCI-OS Graph Node Schema
- * 
- * Defines all 8 core node types, their properties, data types, and constraints.
- * Task 1.1 — Define Graph Node Schema
- */
-
 const NODE_SCHEMA = {
   // ============================================================
   // FIR — First Information Report
@@ -91,13 +84,79 @@ const NODE_SCHEMA = {
         required: false,
         example: "OFF_001",
       },
+      case_master_id: {
+        type: "integer",
+        required: false,
+        description: "CCTNS CaseMasterID PK",
+      },
+      crime_no: {
+        type: "string",
+        required: false,
+        description: "CCTNS CrimeNo (18 digits)",
+      },
+      case_no: {
+        type: "string",
+        required: false,
+        description: "CCTNS CaseNo (YYYY + 5 digits)",
+      },
+      crime_registered_date: { type: "date", required: false },
+      incident_from_date: { type: "timestamp", required: false },
+      incident_to_date: { type: "timestamp", required: false },
+      info_received_ps_date: { type: "timestamp", required: false },
+      brief_facts: {
+        type: "string",
+        required: false,
+        description: "CCTNS BriefFacts summary",
+      },
+      case_category_id: {
+        type: "integer",
+        required: false,
+        foreign_key: "CaseCategory.CaseCategoryID",
+      },
+      gravity_offence_id: {
+        type: "integer",
+        required: false,
+        foreign_key: "GravityOffence.GravityOffenceID",
+      },
+      crime_major_head_id: {
+        type: "integer",
+        required: false,
+        foreign_key: "CrimeHead.CrimeHeadID",
+      },
+      crime_minor_head_id: {
+        type: "integer",
+        required: false,
+        foreign_key: "CrimeSubHead.CrimeSubHeadID",
+      },
+      case_status_id: {
+        type: "integer",
+        required: false,
+        foreign_key: "CaseStatusMaster.CaseStatusID",
+      },
+      court_id: {
+        type: "integer",
+        required: false,
+        foreign_key: "Court.CourtID",
+      },
+      complainant_details: {
+        type: "json",
+        required: false,
+        description: "ComplainantDetails ER table mapping",
+      },
       created_at: {
         type: "timestamp",
         required: true,
         auto: true,
       },
     },
-    indexes: ["fir_no", "crime_type", "date_filed", "status"],
+    indexes: [
+      "fir_no",
+      "crime_type",
+      "date_filed",
+      "status",
+      "case_master_id",
+      "crime_no",
+    ],
   },
 
   // ============================================================
@@ -155,13 +214,34 @@ const NODE_SCHEMA = {
         required: false,
         description: "Reference to fingerprint database",
       },
+      accused_master_id: {
+        type: "integer",
+        required: false,
+        description: "CCTNS AccusedMasterID PK",
+      },
+      case_master_id: {
+        type: "integer",
+        required: false,
+        foreign_key: "CaseMaster.CaseMasterID",
+      },
+      person_id: {
+        type: "string",
+        required: false,
+        description: "Accused sorting like A1, A2, A3",
+      },
+      is_accused: { type: "boolean", required: false, default: true },
+      is_complainant_accused: {
+        type: "boolean",
+        required: false,
+        default: false,
+      },
       created_at: {
         type: "timestamp",
         required: true,
         auto: true,
       },
     },
-    indexes: ["accused_id", "name", "district"],
+    indexes: ["accused_id", "name", "district", "accused_master_id"],
   },
 
   // ============================================================
@@ -204,7 +284,23 @@ const NODE_SCHEMA = {
         type: "boolean",
         required: false,
         default: false,
-        description: "True if victim is elderly, minor, or otherwise vulnerable",
+        description:
+          "True if victim is elderly, minor, or otherwise vulnerable",
+      },
+      victim_master_id: {
+        type: "integer",
+        required: false,
+        description: "CCTNS VictimMasterID PK",
+      },
+      case_master_id: {
+        type: "integer",
+        required: false,
+        foreign_key: "CaseMaster.CaseMasterID",
+      },
+      victim_police: {
+        type: "string",
+        required: false,
+        description: "If Victim is police then 1 else 0",
       },
       created_at: {
         type: "timestamp",
@@ -212,7 +308,7 @@ const NODE_SCHEMA = {
         auto: true,
       },
     },
-    indexes: ["victim_id", "name", "district"],
+    indexes: ["victim_id", "name", "district", "victim_master_id"],
   },
 
   // ============================================================
@@ -344,7 +440,14 @@ const NODE_SCHEMA = {
       type: {
         type: "string",
         required: false,
-        enum: ["car", "motorcycle", "truck", "auto_rickshaw", "bicycle", "other"],
+        enum: [
+          "car",
+          "motorcycle",
+          "truck",
+          "auto_rickshaw",
+          "bicycle",
+          "other",
+        ],
       },
       color: {
         type: "string",

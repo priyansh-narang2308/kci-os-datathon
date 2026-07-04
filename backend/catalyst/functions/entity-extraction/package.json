@@ -1,0 +1,9 @@
+{
+  "name": "entity-extraction",
+  "version": "1.0.0",
+  "description": "KCI-OS — Entity extraction from FIR narrative text",
+  "main": "index.js",
+  "dependencies": {
+    "@zmc/catalyst": "latest"
+  }
+}

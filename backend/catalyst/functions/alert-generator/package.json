@@ -1,0 +1,9 @@
+{
+  "name": "alert-generator",
+  "version": "1.0.0",
+  "description": "KCI-OS — Generate early-warning alerts from forecasting engine",
+  "main": "index.js",
+  "dependencies": {
+    "@zmc/catalyst": "latest"
+  }
+}

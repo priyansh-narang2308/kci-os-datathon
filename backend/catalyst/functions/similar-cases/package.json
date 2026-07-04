@@ -1,0 +1,9 @@
+{
+  "name": "similar-cases",
+  "version": "1.0.0",
+  "description": "KCI-OS — Find similar historical cases using investigation support engine",
+  "main": "index.js",
+  "dependencies": {
+    "@zmc/catalyst": "latest"
+  }
+}

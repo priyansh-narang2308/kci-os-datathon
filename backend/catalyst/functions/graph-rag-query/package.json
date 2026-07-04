@@ -1,0 +1,9 @@
+{
+  "name": "graph-rag-query",
+  "version": "1.0.0",
+  "description": "KCI-OS — GraphRAG query answering over the knowledge graph",
+  "main": "index.js",
+  "dependencies": {
+    "@zmc/catalyst": "latest"
+  }
+}

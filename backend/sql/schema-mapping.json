@@ -1,0 +1,232 @@
+{
+  "diagram_name": "Police FIR System — ER Diagram",
+  "source": "Karnataka Police Department — Database Design Document",
+  "total_tables": 26,
+  "mapping": {
+    "CaseMaster": {
+      "er_table": "CaseMaster",
+      "description": "Main FIR/case table",
+      "our_fields": {
+        "fir_no": "CaseNo / CrimeNo",
+        "date_filed": "CrimeRegisteredDate",
+        "police_station_id": "PoliceStationID (FK → Unit.UnitID)",
+        "district": "→ PoliceStationID → Unit.DistrictID → District.DistrictName",
+        "crime_type": "CrimeMinorHeadID (FK → CrimeSubHead)",
+        "sections_of_law": "→ ActSectionAssociation",
+        "status": "CaseStatusID (FK → CaseStatusMaster)",
+        "narrative_text": "BriefFacts",
+        "lat": "latitude",
+        "long": "longitude",
+        "investigating_officer_id": "PolicePersonID (FK → Employee.EmployeeID)",
+        "created_at": "InfoReceivedPSDate"
+      },
+      "catalyst_table": "CaseMaster",
+      "cards_used": [
+        "CaseMaster",
+        "Unit",
+        "CrimeSubHead",
+        "CaseStatusMaster",
+        "Employee",
+        "District"
+      ]
+    },
+    "ComplainantDetails": {
+      "er_table": "ComplainantDetails",
+      "description": "Complainant information per FIR",
+      "our_fields": {
+        "complainant": "ComplainantName",
+        "victim_name": "→ Victim.VictimName (separate entity per ER)"
+      },
+      "catalyst_table": "ComplainantDetails",
+      "cards_used": ["ComplainantDetails", "Victim"]
+    },
+    "Victim": {
+      "er_table": "Victim",
+      "description": "Victim information — separate table per ER",
+      "our_fields": {
+        "victim_name": "VictimName",
+        "suspect_name": "→ Accused.AccusedName"
+      },
+      "catalyst_table": "Victim",
+      "cards_used": ["Victim"]
+    },
+    "Accused": {
+      "er_table": "Accused",
+      "description": "Accused person information",
+      "our_fields": {
+        "suspect_name": "AccusedName",
+        "accused_ids": "PersonID (A1, A2, A3...)"
+      },
+      "catalyst_table": "Accused",
+      "cards_used": ["Accused"]
+    },
+    "ActSectionAssociation": {
+      "er_table": "ActSectionAssociation",
+      "description": "Links cases to legal act-sections",
+      "our_fields": {
+        "sections_of_law": "→ Multiple ActSectionAssociation rows (ActID + SectionID)"
+      },
+      "catalyst_table": "ActSectionAssociation",
+      "cards_used": ["ActSectionAssociation", "Act", "Section"]
+    },
+    "CrimeHead": {
+      "er_table": "CrimeHead",
+      "description": "Major crime head classification",
+      "our_fields": {
+        "crime_type → theft/burglary": "→ CrimeMajorHeadID = 2 (Crimes Against Property)",
+        "crime_type → assault": "→ CrimeMajorHeadID = 1 (Crimes Against Body)",
+        "crime_type → cyber_fraud": "→ CrimeMajorHeadID = 7 (Cyber Crimes)"
+      },
+      "catalyst_table": "CrimeHead",
+      "rows": 9
+    },
+    "CrimeSubHead": {
+      "er_table": "CrimeSubHead",
+      "description": "Minor crime sub-head classification (maps our crime_type)",
+      "catalyst_table": "CrimeSubHead",
+      "rows": 13
+    },
+    "ArrestSurrender": {
+      "er_table": "ArrestSurrender",
+      "description": "Tracks arrest and surrender events per accused per case",
+      "our_fields": {},
+      "catalyst_table": "ArrestSurrender",
+      "cards_used": [
+        "ArrestSurrender",
+        "State",
+        "District",
+        "Court",
+        "Employee"
+      ]
+    },
+    "ChargesheetDetails": {
+      "er_table": "ChargesheetDetails",
+      "description": "Final report / chargesheet filing details",
+      "our_fields": {
+        "status = chargesheeted": "→ ChargesheetDetails exists with cstype = 'A'"
+      },
+      "catalyst_table": "ChargesheetDetails",
+      "cards_used": ["ChargesheetDetails"]
+    },
+    "Court": {
+      "er_table": "Court",
+      "description": "Court master data",
+      "our_fields": {},
+      "catalyst_table": "Court",
+      "rows": 6
+    },
+    "Employee": {
+      "er_table": "Employee",
+      "description": "Police employee master",
+      "our_fields": {
+        "investigating_officer_id": "EmployeeID",
+        "username/name": "FirstName"
+      },
+      "catalyst_table": "Employee",
+      "rows": 5
+    },
+    "Unit": {
+      "er_table": "Unit",
+      "description": "Police station / unit master",
+      "our_fields": {
+        "police_station_id": "UnitID",
+        "district": "→ DistrictID → District"
+      },
+      "catalyst_table": "Unit",
+      "rows": 14
+    },
+    "UnitType": {
+      "er_table": "UnitType",
+      "description": "Unit type classification (PS, Circle, etc.)",
+      "catalyst_table": "UnitType",
+      "rows": 5
+    },
+    "Rank": {
+      "er_table": "Rank",
+      "description": "Police rank master",
+      "catalyst_table": "Rank",
+      "rows": 13
+    },
+    "Designation": {
+      "er_table": "Designation",
+      "description": "Police designation master",
+      "catalyst_table": "Designation",
+      "rows": 7
+    },
+    "CaseCategory": {
+      "er_table": "CaseCategory",
+      "description": "Case category (FIR, UDR, Zero FIR, PAR)",
+      "catalyst_table": "CaseCategory",
+      "rows": 4
+    },
+    "GravityOffence": {
+      "er_table": "GravityOffence",
+      "description": "Offence gravity (Heinous / Non-Heinous)",
+      "catalyst_table": "GravityOffence",
+      "rows": 2
+    },
+    "CaseStatusMaster": {
+      "er_table": "CaseStatusMaster",
+      "description": "Case status lookup",
+      "our_fields": {
+        "status = registered": "CaseStatusID = 1",
+        "status = under_investigation": "CaseStatusID = 2",
+        "status = chargesheeted": "CaseStatusID = 3",
+        "status = closed": "CaseStatusID = 4"
+      },
+      "catalyst_table": "CaseStatusMaster",
+      "rows": 9
+    },
+    "District": {
+      "er_table": "District",
+      "description": "District master data",
+      "our_fields": {
+        "district": "DistrictName"
+      },
+      "catalyst_table": "District",
+      "rows": 9
+    },
+    "State": {
+      "er_table": "State",
+      "description": "State master data",
+      "catalyst_table": "State",
+      "rows": 1
+    },
+    "Act": {
+      "er_table": "Act",
+      "description": "Legal act master (IPC, NDPS, IT, CrPC)",
+      "catalyst_table": "Act",
+      "rows": 4
+    },
+    "Section": {
+      "er_table": "Section",
+      "description": "Legal section master under each act",
+      "catalyst_table": "Section",
+      "rows": 70
+    },
+    "CrimeHeadActSection": {
+      "er_table": "CrimeHeadActSection",
+      "description": "Maps CrimeHead to Act+Section for standard charging",
+      "catalyst_table": "CrimeHeadActSection",
+      "rows": 35
+    },
+    "OccupationMaster": {
+      "er_table": "OccupationMaster",
+      "description": "Occupation lookup",
+      "catalyst_table": "OccupationMaster",
+      "rows": 10
+    },
+    "ReligionMaster": {
+      "er_table": "ReligionMaster",
+      "description": "Religion lookup",
+      "catalyst_table": "ReligionMaster",
+      "rows": 7
+    },
+    "CasteMaster": {
+      "er_table": "CasteMaster",
+      "description": "Caste lookup",
+      "catalyst_table": "CasteMaster",
+      "rows": 5
+    }
+  }
+}

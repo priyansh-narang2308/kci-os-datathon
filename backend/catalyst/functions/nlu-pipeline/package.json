@@ -1,0 +1,9 @@
+{
+  "name": "nlu-pipeline",
+  "version": "1.0.0",
+  "description": "KCI-OS — NLU intent classification and slot extraction",
+  "main": "index.js",
+  "dependencies": {
+    "@zmc/catalyst": "latest"
+  }
+}

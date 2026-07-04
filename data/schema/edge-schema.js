@@ -1,10 +1,3 @@
-/**
- * KCI-OS Graph Edge Schema
- * 
- * Defines all 8 core edge types, their direction, properties, and confidence scoring.
- * Task 1.2 — Define Graph Edge Schema
- */
-
 const EDGE_SCHEMA = {
   // ============================================================
   // involved_in — Accused/Victim linked to FIR
@@ -104,7 +97,8 @@ const EDGE_SCHEMA = {
     confidence: {
       default: 0.5,
       source: "Variable — investigator or AI",
-      description: "Variable confidence — must always be displayed with provenance",
+      description:
+        "Variable confidence — must always be displayed with provenance",
     },
   },
 
@@ -208,7 +202,12 @@ const EDGE_SCHEMA = {
       source: {
         type: "string",
         required: false,
-        enum: ["intelligence_report", "pattern_detected", "witness", "ai_inferred"],
+        enum: [
+          "intelligence_report",
+          "pattern_detected",
+          "witness",
+          "ai_inferred",
+        ],
       },
     },
     confidence: {
@@ -351,13 +350,13 @@ function validateEdgeCreation(edgeName, fromLabel, toLabel) {
 
   if (!isValidSource(edgeName, fromLabel)) {
     errors.push(
-      `Node type '${fromLabel}' cannot be source of edge '${edgeName}'. Valid sources: ${getEdgeSchema(edgeName).from.join(", ")}`
+      `Node type '${fromLabel}' cannot be source of edge '${edgeName}'. Valid sources: ${getEdgeSchema(edgeName).from.join(", ")}`,
     );
   }
 
   if (!isValidTarget(edgeName, toLabel)) {
     errors.push(
-      `Node type '${toLabel}' cannot be target of edge '${edgeName}'. Valid targets: ${getEdgeSchema(edgeName).to.join(", ")}`
+      `Node type '${toLabel}' cannot be target of edge '${edgeName}'. Valid targets: ${getEdgeSchema(edgeName).to.join(", ")}`,
     );
   }
 
@@ -384,9 +383,7 @@ function getConfidenceInfo(edgeName) {
  */
 function getEdgesForNode(label) {
   return Object.entries(EDGE_SCHEMA)
-    .filter(
-      ([, edge]) => edge.from.includes(label) || edge.to.includes(label)
-    )
+    .filter(([, edge]) => edge.from.includes(label) || edge.to.includes(label))
     .map(([name]) => name);
 }
 

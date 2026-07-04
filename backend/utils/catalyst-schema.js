@@ -1,11 +1,4 @@
-/**
- * Catalyst Data Store Schema
- * 
- * Defines collections and indexes for Catalyst Data Store.
- * This is the relational/document layer beneath the graph abstraction.
- * 
- * Task 1.9
- */
+
 
 const CATALYST_COLLECTIONS = {
   FIR: {
@@ -24,9 +17,32 @@ const CATALYST_COLLECTIONS = {
       investigating_officer_id: { type: "string" },
       district: { type: "string" },
       taluk: { type: "string" },
+      case_master_id: { type: "integer" },
+      crime_no: { type: "string" },
+      case_no: { type: "string" },
+      crime_registered_date: { type: "date" },
+      incident_from_date: { type: "timestamp" },
+      incident_to_date: { type: "timestamp" },
+      info_received_ps_date: { type: "timestamp" },
+      brief_facts: { type: "text" },
+      case_category_id: { type: "integer" },
+      gravity_offence_id: { type: "integer" },
+      crime_major_head_id: { type: "integer" },
+      crime_minor_head_id: { type: "integer" },
+      case_status_id: { type: "integer" },
+      court_id: { type: "integer" },
+      complainant_details: { type: "json" },
       created_at: { type: "timestamp", required: true },
     },
-    indexes: ["fir_no", "crime_type", "date_filed", "status", "district"],
+    indexes: [
+      "fir_no",
+      "crime_type",
+      "date_filed",
+      "status",
+      "district",
+      "case_master_id",
+      "crime_no",
+    ],
   },
 
   Accused: {
@@ -42,9 +58,14 @@ const CATALYST_COLLECTIONS = {
       district: { type: "string" },
       prior_conviction_count: { type: "integer", default: 0 },
       fingerprint_ref: { type: "string" },
+      accused_master_id: { type: "integer" },
+      case_master_id: { type: "integer" },
+      person_id: { type: "string" },
+      is_accused: { type: "boolean", default: true },
+      is_complainant_accused: { type: "boolean", default: false },
       created_at: { type: "timestamp", required: true },
     },
-    indexes: ["accused_id", "name", "district"],
+    indexes: ["accused_id", "name", "district", "accused_master_id"],
   },
 
   Victim: {
@@ -58,9 +79,12 @@ const CATALYST_COLLECTIONS = {
       address: { type: "string" },
       district: { type: "string" },
       vulnerability_flag: { type: "boolean", default: false },
+      victim_master_id: { type: "integer" },
+      case_master_id: { type: "integer" },
+      victim_police: { type: "string" },
       created_at: { type: "timestamp", required: true },
     },
-    indexes: ["victim_id", "name", "district"],
+    indexes: ["victim_id", "name", "district", "victim_master_id"],
   },
 
   Location: {
@@ -202,7 +226,8 @@ function generateCreateTableSQL(name) {
       else if (config.type === "json") sql += " JSON";
       if (config.required) sql += " NOT NULL";
       if (config.unique) sql += " UNIQUE";
-      if (config.default !== undefined) sql += ` DEFAULT ${JSON.stringify(config.default)}`;
+      if (config.default !== undefined)
+        sql += ` DEFAULT ${JSON.stringify(config.default)}`;
       return sql;
     })
     .join(",\n");
