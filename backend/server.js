@@ -1494,8 +1494,8 @@ app.get("/api/fact-store", authenticateToken, (req, res) => {
   res.json({ facts });
 });
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-  console.log(`KCI-OS API Server running on http://localhost:${PORT}`);
+const PORT = process.env.X_ZOHO_CATALYST_APPSAIL_PORT || process.env.X_ZOHO_CATALYST_LISTEN_PORT || process.env.PORT || 9000;
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`KCI-OS API Server running on port ${PORT}`);
   console.log(`Loaded ${firs.length} FIR records`);
 });
