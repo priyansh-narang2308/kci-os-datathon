@@ -343,9 +343,9 @@ app.post(
   ...protect("investigator", "supervisor", "admin"),
   async (req, res) => {
     try {
-      const { query: q, history } = req.body;
+      const { query: q, history, language: reqLang } = req.body;
       if (!q) return res.status(400).json({ error: "Missing query" });
-      const nluResult = processQuery(q, history);
+      const nluResult = processQuery(q, history, reqLang);
       if (nluResult.status === "needs_clarification") {
         return res.json({
           type: "clarification",

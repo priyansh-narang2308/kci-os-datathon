@@ -1,7 +1,3 @@
-/* eslint-disable react-hooks/immutability */
-/* eslint-disable react-hooks/set-state-in-effect */
-"use client";
-
 import { useEffect, useState } from "react";
 import { Globe2, Check, ChevronDown } from "lucide-react";
 import {
@@ -10,14 +6,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-declare global {
-  interface Window {
-    googleTranslateElementInit?: () => void;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    google?: any;
-  }
-}
 
 const languages = [
   { code: "en", label: "English", short: "EN", sub: "Default" },
@@ -36,97 +24,15 @@ export function LanguageSelector({
   const [currentLang, setCurrentLang] = useState<string>("en");
 
   useEffect(() => {
-    // Check existing cookie or localStorage
     const saved = localStorage.getItem("kci_lang");
-    if (saved && (saved === "en" || saved === "kn")) {
+    if (saved === "en" || saved === "kn") {
       setCurrentLang(saved);
-    } else {
-      const match = document.cookie.match(/googtrans=\/en\/([a-z]{2})/);
-      if (match && match[1] === "kn") {
-        setCurrentLang("kn");
-      }
-    }
-
-    if (!document.getElementById("google-translate-overrides")) {
-      const style = document.createElement("style");
-      style.id = "google-translate-overrides";
-      style.innerHTML = `
-        body { top: 0px !important; position: static !important; min-height: 100vh; }
-        iframe.goog-te-banner-frame,
-        iframe[src*="translate"],
-        .skiptranslate > iframe { display: none !important; visibility: hidden !important; height: 0 !important; }
-        .goog-te-gadget-icon, #goog-gt-tt, .goog-tooltip, .goog-te-balloon-frame { display: none !important; }
-        .goog-text-highlight { background: none !important; box-shadow: none !important; }
-        #google_translate_element { display: none !important; }
-        html { margin-top: 0px !important; }
-      `;
-      document.head.appendChild(style);
-    }
-
-    // MutationObserver: re-hide any Google Translate injected elements
-    const observer = new MutationObserver(() => {
-      const banner = document.querySelector("iframe.goog-te-banner-frame");
-      if (banner) (banner as HTMLElement).style.display = "none";
-      const body = document.body;
-      if (body.style.top && body.style.top !== "0px") {
-        body.style.top = "0px";
-      }
-    });
-    observer.observe(document.body, { attributes: true, childList: true, subtree: true });
-
-    return () => observer.disconnect();
-
-    if (!document.getElementById("google_translate_element")) {
-      const div = document.createElement("div");
-      div.id = "google_translate_element";
-      div.style.display = "none";
-      document.body.appendChild(div);
-    }
-
-    // Initialize script if not already loaded
-    if (!window.googleTranslateElementInit) {
-      window.googleTranslateElementInit = () => {
-        if (window.google && window.google.translate) {
-          new window.google.translate.TranslateElement(
-            {
-              pageLanguage: "en",
-              includedLanguages: "en,kn",
-              autoDisplay: false,
-            },
-            "google_translate_element",
-          );
-        }
-      };
-
-      if (!document.getElementById("google-translate-script")) {
-        const script = document.createElement("script");
-        script.id = "google-translate-script";
-        script.src =
-          "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-        script.async = true;
-        document.body.appendChild(script);
-      }
     }
   }, []);
 
   const switchLanguage = (langCode: string) => {
     setCurrentLang(langCode);
     localStorage.setItem("kci_lang", langCode);
-
-    const val = langCode === "en" ? "/en/en" : `/en/${langCode}`;
-    document.cookie = `googtrans=${val}; path=/;`;
-    document.cookie = `googtrans=${val}; path=/; domain=.${window.location.hostname};`;
-
-    const combo = document.querySelector(
-      ".goog-te-combo",
-    ) as HTMLSelectElement | null;
-    if (combo) {
-      combo.value = langCode;
-      combo.dispatchEvent(new Event("change", { bubbles: true }));
-    } else {
-      // Fallback reload if combo wasn't loaded yet
-      window.location.reload();
-    }
   };
 
   const activeLang =
@@ -155,7 +61,7 @@ export function LanguageSelector({
         className="w-48 p-1.5 shadow-lg rounded-xl border border-stone-200/80 bg-white z-50"
       >
         <div className="px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-stone-400 border-b border-stone-100 mb-1">
-          Select Interface Language
+          Select NLU Response Language
         </div>
         {languages.map((lang) => {
           const isSelected = currentLang === lang.code;

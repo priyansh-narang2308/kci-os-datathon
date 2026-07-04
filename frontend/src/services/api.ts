@@ -167,6 +167,7 @@ export async function queryGraphRAG(
   history?: { role: string; content: string }[],
   role?: string,
   jurisdiction?: string,
+  language?: string,
 ): Promise<GraphRAGResponse> {
   return request("/graphrag", {
     method: "POST",
@@ -175,6 +176,7 @@ export async function queryGraphRAG(
       history: history || [],
       user_role: role || "investigator",
       jurisdiction: jurisdiction || "",
+      language: language || "",
     }),
   });
 }

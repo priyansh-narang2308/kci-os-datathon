@@ -79,7 +79,7 @@ function extractSlotsFromHistory(history, missingSlots) {
   return filled;
 }
 
-function processQuery(text, history) {
+function processQuery(text, history, preferredLang) {
   const lang = detectLanguage(text);
 
   let result;
@@ -93,6 +93,12 @@ function processQuery(text, history) {
     default:
       result = processEnglishQuery(text);
   }
+
+  // If user specified a preferred language, suggest response language
+  if (preferredLang && ["en", "kn", "mixed"].includes(preferredLang)) {
+    result.suggested_response_language = preferredLang;
+  }
+  result.detected_language = lang;
 
   // Validate required slots
   const required = REQUIRED_SLOTS[result.intent] || [];

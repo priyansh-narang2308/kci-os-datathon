@@ -215,7 +215,8 @@ export default function InvestigationPage() {
         role: m.role,
         content: m.content,
       }));
-      const result = await queryGraphRAG(query, chatHistory);
+      const lang = localStorage.getItem("kci_lang") || "";
+      const result = await queryGraphRAG(query, chatHistory, undefined, undefined, lang);
       const botTime = new Date().toLocaleTimeString([], {
         hour: "2-digit",
         minute: "2-digit",
