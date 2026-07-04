@@ -12,19 +12,6 @@ import TrendsPage from "@/pages/TrendsPage"
 import AuditPage from "@/pages/AuditPage"
 import SettingsPage from "@/pages/SettingsPage"
 
-function SessionRedirect() {
-  const navigate = useNavigate()
-  useEffect(() => {
-    const redirect = sessionStorage.getItem("redirect")
-    if (redirect) {
-      sessionStorage.removeItem("redirect")
-      const path = redirect.replace("/app", "") || "/dashboard"
-      navigate(path, { replace: true })
-    }
-  }, [navigate])
-  return null
-}
-
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth()
   const location = useLocation()
@@ -60,9 +47,24 @@ function RoleRoute({ children, allowedRoles }: { children: React.ReactNode; allo
 
 function LandingRoute() {
   const { isAuthenticated, isLoading } = useAuth()
+  const navigate = useNavigate()
+  useEffect(() => {
+    const redirect = sessionStorage.getItem("redirect")
+    if (redirect) {
+      sessionStorage.removeItem("redirect")
+      const path = redirect.replace("/app", "") || "/dashboard"
+      navigate(path, { replace: true })
+    }
+  }, [navigate])
   if (isLoading) return null
   if (isAuthenticated) return <Navigate to="/dashboard" replace />
   return <LandingPage />
+}
+
+function IndexHtmlRedirect() {
+  const navigate = useNavigate()
+  useEffect(() => { navigate("/", { replace: true }) }, [navigate])
+  return null
 }
 
 const router = createBrowserRouter([
@@ -70,12 +72,12 @@ const router = createBrowserRouter([
     path: "/",
     children: [
       {
-        path: "login",
-        element: <LoginPage />,
+        path: "index.html",
+        element: <IndexHtmlRedirect />,
       },
       {
-        path: "index.html",
-        element: <SessionRedirect />,
+        path: "login",
+        element: <LoginPage />,
       },
       {
         index: true,
