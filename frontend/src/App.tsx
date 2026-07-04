@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { Navigate, createBrowserRouter, RouterProvider, useLocation, useNavigate } from "react-router-dom"
+import { Navigate, createHashRouter, RouterProvider, useLocation, useNavigate } from "react-router-dom"
 import { useAuth } from "./contexts/AuthContext"
 import LandingPage from "@/pages/LandingPage"
 import LoginPage from "@/pages/LoginPage"
@@ -67,7 +67,7 @@ function IndexHtmlRedirect() {
   return null
 }
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: "/",
     children: [
@@ -102,9 +102,8 @@ const router = createBrowserRouter([
       },
     ],
   },
-], {
-  basename: import.meta.env.DEV ? "/" : "/app",
-})
+],)
+
 
 export default function App() {
   return <RouterProvider router={router} />
