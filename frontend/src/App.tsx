@@ -68,11 +68,14 @@ function LandingRoute() {
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <SessionRedirect />,
     children: [
       {
         path: "login",
         element: <LoginPage />,
+      },
+      {
+        path: "index.html",
+        element: <SessionRedirect />,
       },
       {
         index: true,
