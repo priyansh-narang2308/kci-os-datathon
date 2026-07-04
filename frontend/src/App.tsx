@@ -1,4 +1,5 @@
-import { Navigate, createBrowserRouter, RouterProvider, useLocation } from "react-router-dom"
+import { useEffect } from "react"
+import { Navigate, createBrowserRouter, RouterProvider, useLocation, useNavigate } from "react-router-dom"
 import { useAuth } from "./contexts/AuthContext"
 import LandingPage from "@/pages/LandingPage"
 import LoginPage from "@/pages/LoginPage"
@@ -10,6 +11,19 @@ import AlertsPage from "@/pages/AlertsPage"
 import TrendsPage from "@/pages/TrendsPage"
 import AuditPage from "@/pages/AuditPage"
 import SettingsPage from "@/pages/SettingsPage"
+
+function SessionRedirect() {
+  const navigate = useNavigate()
+  useEffect(() => {
+    const redirect = sessionStorage.getItem("redirect")
+    if (redirect) {
+      sessionStorage.removeItem("redirect")
+      const path = redirect.replace("/app", "") || "/dashboard"
+      navigate(path, { replace: true })
+    }
+  }, [navigate])
+  return null
+}
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth()
@@ -53,31 +67,39 @@ function LandingRoute() {
 
 const router = createBrowserRouter([
   {
-    path: "/login",
-    element: <LoginPage />,
-  },
-  {
     path: "/",
-    element: <LandingRoute />,
-  },
-  {
-    path: "/dashboard",
-    element: (
-      <ProtectedRoute>
-        <DashboardLayout />
-      </ProtectedRoute>
-    ),
+    element: <SessionRedirect />,
     children: [
-      { index: true, element: <RoleRoute allowedRoles={["investigator","supervisor","admin"]}><InvestigationPage /></RoleRoute> },
-      { path: "network", element: <RoleRoute allowedRoles={["investigator","analyst","admin"]}><NetworkPage /></RoleRoute> },
-      { path: "hotspots", element: <RoleRoute allowedRoles={["analyst","admin"]}><HotspotsPage /></RoleRoute> },
-      { path: "alerts", element: <RoleRoute allowedRoles={["investigator","analyst","supervisor","admin"]}><AlertsPage /></RoleRoute> },
-      { path: "trends", element: <RoleRoute allowedRoles={["analyst","supervisor","policymaker","admin"]}><TrendsPage /></RoleRoute> },
-      { path: "audit", element: <RoleRoute allowedRoles={["analyst","supervisor","policymaker","admin"]}><AuditPage /></RoleRoute> },
-      { path: "settings", element: <RoleRoute allowedRoles={["supervisor","policymaker","admin"]}><SettingsPage /></RoleRoute> },
+      {
+        path: "login",
+        element: <LoginPage />,
+      },
+      {
+        index: true,
+        element: <LandingRoute />,
+      },
+      {
+        path: "dashboard",
+        element: (
+          <ProtectedRoute>
+            <DashboardLayout />
+          </ProtectedRoute>
+        ),
+        children: [
+          { index: true, element: <RoleRoute allowedRoles={["investigator","supervisor","admin"]}><InvestigationPage /></RoleRoute> },
+          { path: "network", element: <RoleRoute allowedRoles={["investigator","analyst","admin"]}><NetworkPage /></RoleRoute> },
+          { path: "hotspots", element: <RoleRoute allowedRoles={["analyst","admin"]}><HotspotsPage /></RoleRoute> },
+          { path: "alerts", element: <RoleRoute allowedRoles={["investigator","analyst","supervisor","admin"]}><AlertsPage /></RoleRoute> },
+          { path: "trends", element: <RoleRoute allowedRoles={["analyst","supervisor","policymaker","admin"]}><TrendsPage /></RoleRoute> },
+          { path: "audit", element: <RoleRoute allowedRoles={["analyst","supervisor","policymaker","admin"]}><AuditPage /></RoleRoute> },
+          { path: "settings", element: <RoleRoute allowedRoles={["supervisor","policymaker","admin"]}><SettingsPage /></RoleRoute> },
+        ],
+      },
     ],
   },
-])
+], {
+  basename: import.meta.env.DEV ? "/" : "/app",
+})
 
 export default function App() {
   return <RouterProvider router={router} />

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-const API_BASE = "/api";
+const API_BASE = "https://kci-os-backend-50043486306.development.catalystappsail.in/api";
 
 function getAuthHeaders(): Record<string, string> {
   const token = localStorage.getItem("kci_os_token");
@@ -13,7 +13,7 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   });
   if (res.status === 401 || res.status === 403) {
     localStorage.removeItem("kci_os_token");
-    window.location.href = "/login";
+    window.location.href = "/app/login";
     throw new Error("Session expired");
   }
   if (!res.ok) {
