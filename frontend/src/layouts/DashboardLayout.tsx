@@ -226,18 +226,21 @@ export default function DashboardLayout() {
           <header className="flex h-14 shrink-0 items-center gap-3 border-b border-border bg-background/80 backdrop-blur-md px-4 sticky top-0 z-30">
             <SidebarTrigger className="cursor-pointer" />
             
-            {/* Sleek Interactive Search Bar */}
-            <div className="relative flex-1 max-w-lg mx-1">
-              <div className="flex items-center gap-2.5 rounded-full bg-stone-100/90 border border-stone-200/80 px-3.5 py-1.5 text-sm transition-all focus-within:bg-white focus-within:ring-2 focus-within:ring-emerald-500/20 focus-within:border-emerald-500 shadow-2xs hover:bg-stone-100">
-                <Search className="size-4 text-emerald-600 shrink-0" />
+            {/* Sleek Ultra-Premium Command Bar */}
+            <div className="relative flex-1 max-w-md mx-2">
+              <div className="group flex items-center gap-3 rounded-xl bg-white/80 hover:bg-white border border-stone-200/80 px-3 py-1.5 text-sm transition-all duration-200 focus-within:bg-white focus-within:ring-2 focus-within:ring-emerald-500/20 focus-within:border-emerald-500/80 shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.06)] cursor-text">
+                <div className="flex items-center justify-center size-6 rounded-lg bg-emerald-500/10 text-emerald-600 group-hover:bg-emerald-500 group-hover:text-white transition-colors duration-200 shrink-0">
+                  <Search className="size-3.5" />
+                </div>
                 <input
                   type="text"
-                  placeholder="Search FIR records, suspect IDs, entities or Cypher patterns..."
-                  className="bg-transparent border-none outline-none w-full text-xs sm:text-sm text-stone-800 placeholder:text-stone-400 font-medium"
+                  placeholder="Search CCTNS graph, FIRs or suspects..."
+                  className="bg-transparent border-none outline-none w-full text-xs sm:text-sm text-stone-800 placeholder:text-stone-400 font-normal tracking-tight"
                 />
-                <kbd className="hidden sm:inline-flex h-5 items-center gap-0.5 rounded border border-stone-300/80 bg-white px-1.5 font-mono text-[10px] font-semibold text-stone-500 shadow-2xs">
-                  <Command className="size-2.5" /> K
-                </kbd>
+                <div className="hidden sm:flex items-center gap-1 rounded-md bg-stone-100/90 px-2 py-0.5 text-[11px] font-medium text-stone-500 border border-stone-200/60 group-hover:border-stone-300/80 transition-colors shrink-0 shadow-2xs">
+                  <Command className="size-2.5" />
+                  <span className="text-[10px] font-semibold">K</span>
+                </div>
               </div>
             </div>
 
