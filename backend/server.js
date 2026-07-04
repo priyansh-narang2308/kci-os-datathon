@@ -224,7 +224,6 @@ const networkClient = new MockGraphClient(edgesData);
 const networkAnalyzer = new NetworkAnalyzer(networkClient);
 
 const app = express();
-app.use(cors());
 app.use(express.json());
 
 // --- Auth routes (public) ---
