@@ -49,30 +49,31 @@ export default function NetworkPage() {
         </p>
       </div>
 
-      <div className="px-6 py-5 border-b border-border bg-stone-50/50">
-        <div className="group flex items-center gap-3 rounded-xl bg-white border border-stone-200/80 p-1.5 transition-all duration-200 focus-within:ring-2 focus-within:ring-emerald-500/20 focus-within:border-emerald-500/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.06)] max-w-xl">
-          <div className="flex items-center justify-center size-9 ml-1.5 rounded-lg bg-emerald-500/10 text-emerald-600 shrink-0 transition-colors group-focus-within:bg-emerald-500 group-focus-within:text-white">
-            <Search className="size-4.5" />
+      <div className="flex-1 overflow-y-auto p-6 bg-stone-50/30">
+        {/* Floating, Centered Prominent Search Bar */}
+        <div className="mb-8 flex justify-center mt-2">
+          <div className="group flex items-center gap-3 rounded-2xl bg-white border border-stone-200/80 p-2 transition-all duration-300 focus-within:ring-4 focus-within:ring-emerald-500/20 focus-within:border-emerald-500/80 shadow-lg hover:shadow-xl w-full max-w-2xl">
+            <div className="flex items-center justify-center size-12 ml-1 rounded-xl bg-emerald-500/10 text-emerald-600 shrink-0 transition-colors group-focus-within:bg-emerald-500 group-focus-within:text-white">
+              <Search className="size-5" />
+            </div>
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+              placeholder="Search by accused ID (e.g. ACC_001) or entity..."
+              className="bg-transparent border-none outline-none w-full text-[16px] text-stone-800 placeholder:text-stone-400 font-medium tracking-tight"
+            />
+            <button
+              onClick={handleSearch}
+              disabled={loading}
+              className="flex h-11 shrink-0 items-center gap-2 rounded-xl bg-emerald-600 px-6 text-[14px] font-bold text-white hover:bg-emerald-500 disabled:opacity-50 shadow-md transition-all"
+            >
+              {loading ? "Analyzing..." : "Analyze Network"}
+              <ArrowRight className="size-4.5" />
+            </button>
           </div>
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            placeholder="Search by accused ID (e.g. ACC_001) or entity..."
-            className="bg-transparent border-none outline-none w-full text-[15px] text-stone-800 placeholder:text-stone-400 font-medium tracking-tight"
-          />
-          <button
-            onClick={handleSearch}
-            disabled={loading}
-            className="flex h-9 shrink-0 items-center gap-1.5 rounded-lg bg-emerald-600 px-4 text-[13px] font-bold text-white hover:bg-emerald-500 disabled:opacity-50 shadow-sm transition-all"
-          >
-            {loading ? "Searching..." : "Search"}
-            <ArrowRight className="size-4" />
-          </button>
         </div>
-      </div>
 
-      <div className="flex-1 overflow-y-auto p-6">
         {!data && !loading && (
           <div className="flex h-full flex-col items-center justify-center text-muted-foreground">
             <Network className="size-12 mb-3 text-muted-foreground" />
