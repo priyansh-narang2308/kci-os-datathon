@@ -50,31 +50,47 @@ class GraphCRUD {
     `,
       {
         fir_no: data.fir_no || data.CrimeNo || data.Crime_No,
-        police_station_id: data.police_station_id || data.PoliceStationID || "PS_MSR_042",
+        police_station_id:
+          data.police_station_id || data.PoliceStationID || "PS_MSR_042",
         date_filed: data.date_filed || data.CrimeRegisteredDate || "2026-01-01",
         crime_type: data.crime_type || data.CrimeMajorHeadName || "general",
-        sections_of_law: JSON.stringify(data.sections_of_law || data.ActSection || []),
+        sections_of_law: JSON.stringify(
+          data.sections_of_law || data.ActSection || [],
+        ),
         status: data.status || data.CaseStatusName || "registered",
         narrative_text: data.narrative_text || data.BriefFacts || "",
         lat: data.lat || data.latitude || null,
         long: data.long || data.longitude || null,
-        investigating_officer_id: data.investigating_officer_id || data.PolicePersonID || null,
+        investigating_officer_id:
+          data.investigating_officer_id || data.PolicePersonID || null,
         district: data.district || data.DistrictName || "Mysuru",
         case_master_id: data.case_master_id || data.CaseMasterID || null,
         crime_no: data.crime_no || data.CrimeNo || data.fir_no || null,
         case_no: data.case_no || data.CaseNo || null,
-        crime_registered_date: data.crime_registered_date || data.CrimeRegisteredDate || data.date_filed || null,
-        incident_from_date: data.incident_from_date || data.IncidentFromDate || null,
+        crime_registered_date:
+          data.crime_registered_date ||
+          data.CrimeRegisteredDate ||
+          data.date_filed ||
+          null,
+        incident_from_date:
+          data.incident_from_date || data.IncidentFromDate || null,
         incident_to_date: data.incident_to_date || data.IncidentToDate || null,
-        info_received_ps_date: data.info_received_ps_date || data.InfoReceivedPSDate || null,
-        brief_facts: data.brief_facts || data.BriefFacts || data.narrative_text || "",
+        info_received_ps_date:
+          data.info_received_ps_date || data.InfoReceivedPSDate || null,
+        brief_facts:
+          data.brief_facts || data.BriefFacts || data.narrative_text || "",
         case_category_id: data.case_category_id || data.CaseCategoryID || null,
-        gravity_offence_id: data.gravity_offence_id || data.GravityOffenceID || null,
-        crime_major_head_id: data.crime_major_head_id || data.CrimeMajorHeadID || null,
-        crime_minor_head_id: data.crime_minor_head_id || data.CrimeMinorHeadID || null,
+        gravity_offence_id:
+          data.gravity_offence_id || data.GravityOffenceID || null,
+        crime_major_head_id:
+          data.crime_major_head_id || data.CrimeMajorHeadID || null,
+        crime_minor_head_id:
+          data.crime_minor_head_id || data.CrimeMinorHeadID || null,
         case_status_id: data.case_status_id || data.CaseStatusID || null,
         court_id: data.court_id || data.CourtID || null,
-        complainant_details: JSON.stringify(data.complainant_details || data.ComplainantDetails || {}),
+        complainant_details: JSON.stringify(
+          data.complainant_details || data.ComplainantDetails || {},
+        ),
       },
     );
   }
@@ -103,7 +119,8 @@ class GraphCRUD {
       RETURN a
     `,
       {
-        accused_id: data.accused_id || data.AccusedMasterID || `ACC_${Date.now()}`,
+        accused_id:
+          data.accused_id || data.AccusedMasterID || `ACC_${Date.now()}`,
         name: data.name || data.AccusedName || "Unknown Accused",
         aliases: JSON.stringify(data.aliases || []),
         age: data.age || data.AgeYear || null,
@@ -111,7 +128,8 @@ class GraphCRUD {
         address: data.address || null,
         district: data.district || null,
         prior_conviction_count: data.prior_conviction_count || 0,
-        accused_master_id: data.accused_master_id || data.AccusedMasterID || null,
+        accused_master_id:
+          data.accused_master_id || data.AccusedMasterID || null,
         case_master_id: data.case_master_id || data.CaseMasterID || null,
         person_id: data.person_id || data.PersonID || null,
         is_accused: data.is_accused !== undefined ? data.is_accused : true,

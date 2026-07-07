@@ -1,9 +1,9 @@
 /**
  * Criminal Network Analysis Engine
- * 
+ *
  * Community detection, centrality scoring, link prediction, network queries.
  * Surface hidden structures and organized crime groups.
- * 
+ *
  * Tasks 6.1 + 6.2 + 6.3 + 6.4 + 6.5
  */
 
@@ -23,7 +23,7 @@ class NetworkAnalyzer {
              type(r) AS relationship, r.confidence AS confidence
     `);
 
-    const edges = result.filter(r => r && r.source && r.target);
+    const edges = result.filter((r) => r && r.source && r.target);
     const graph = this.buildAdjacencyList(edges);
     const communities = this.louvainCommunityDetection(graph);
 
@@ -111,7 +111,9 @@ class NetworkAnalyzer {
     const scores = {};
 
     for (const member of members) {
-      const neighbors = Object.keys(graph[member] || {}).filter(n => members.includes(n));
+      const neighbors = Object.keys(graph[member] || {}).filter((n) =>
+        members.includes(n),
+      );
       const degree = neighbors.length;
 
       // Betweenness approximation
@@ -128,8 +130,15 @@ class NetworkAnalyzer {
 
       scores[member] = {
         degree,
-        betweenness: parseFloat((betweenness / Math.max(1, (members.length - 1) * (members.length - 2) / 2)).toFixed(4)),
-        degree_centrality: parseFloat((degree / Math.max(1, members.length - 1)).toFixed(4)),
+        betweenness: parseFloat(
+          (
+            betweenness /
+            Math.max(1, ((members.length - 1) * (members.length - 2)) / 2)
+          ).toFixed(4),
+        ),
+        degree_centrality: parseFloat(
+          (degree / Math.max(1, members.length - 1)).toFixed(4),
+        ),
       };
     }
 
@@ -138,15 +147,15 @@ class NetworkAnalyzer {
 
   async getKeyPlayers(communityId, topN = 3) {
     const communities = await this.detectCommunities();
-    const community = communities.find(c => c.id === communityId);
+    const community = communities.find((c) => c.id === communityId);
     if (!community) return [];
 
     const ranked = community.members
-      .map(m => ({
+      .map((m) => ({
         accused_id: m,
         ...community.centrality[m],
       }))
-      .sort((a, b) => (b.degree + b.betweenness) - (a.degree + a.betweenness));
+      .sort((a, b) => b.degree + b.betweenness - (a.degree + a.betweenness));
 
     return ranked.slice(0, topN);
   }
@@ -156,7 +165,8 @@ class NetworkAnalyzer {
   // ============================================================
 
   async getNetworkAround(accusedId, hops = 2) {
-    const result = await this.client.query(`
+    const result = await this.client.query(
+      `
       MATCH path = (start:Accused {accused_id: $id})-[*1..$hops]-(connected)
       WHERE NOT start = connected
       RETURN DISTINCT
@@ -167,15 +177,21 @@ class NetworkAnalyzer {
         [r IN relationships(path) | type(r)] AS edge_types
       ORDER BY distance
       LIMIT 50
-    `, { id: accusedId, hops });
+    `,
+      { id: accusedId, hops },
+    );
 
-    const formatted = result.filter(r => r && r.id).map(r => ({
-      id: r.id,
-      name: r.name || r.id,
-      type: r.type || "Accused",
-      distance: r.distance || 1,
-      edge_types: Array.isArray(r.edge_types) ? [...new Set(r.edge_types)] : [r.edge_types],
-    }));
+    const formatted = result
+      .filter((r) => r && r.id)
+      .map((r) => ({
+        id: r.id,
+        name: r.name || r.id,
+        type: r.type || "Accused",
+        distance: r.distance || 1,
+        edge_types: Array.isArray(r.edge_types)
+          ? [...new Set(r.edge_types)]
+          : [r.edge_types],
+      }));
 
     const nodes = [{ id: accusedId, type: "center" }, ...formatted];
     const edges = [];
@@ -191,7 +207,8 @@ class NetworkAnalyzer {
   }
 
   async findHiddenLinks(nodeA, nodeB) {
-    const result = await this.client.query(`
+    const result = await this.client.query(
+      `
       MATCH path = shortestPath((a:Accused {accused_id: $a})-[*..5]-(b:Accused {accused_id: $b}))
       WHERE a <> b
       RETURN [n IN nodes(path) | {
@@ -204,7 +221,9 @@ class NetworkAnalyzer {
         confidence: r.confidence
       }] AS path_edges,
       length(path) AS hops
-    `, { a: nodeA, b: nodeB });
+    `,
+      { a: nodeA, b: nodeB },
+    );
 
     if (result.length === 0) return null;
     return result[0];
@@ -217,14 +236,17 @@ class NetworkAnalyzer {
 
     const firsPerMember = await Promise.all(
       community.members.slice(0, 10).map(async (m) => {
-        const firs = await this.client.query(`
+        const firs = await this.client.query(
+          `
           MATCH (a:Accused {accused_id: $id})-[r:involved_in]->(f:FIR)
           RETURN count(f) AS fir_count,
                  collect(DISTINCT f.crime_type) AS crime_types
-        `, { id: m });
+        `,
+          { id: m },
+        );
         const data = firs[0];
         return { accused_id: m, ...data };
-      })
+      }),
     );
 
     const dominantCrime = {};
@@ -289,23 +311,35 @@ class NetworkAnalyzer {
   getNodeColor(type, isCenter) {
     if (isCenter) return "#ff4444";
     switch (type) {
-      case "Accused": return "#ff6b35";
-      case "FIR": return "#2b7be4";
-      case "Phone": return "#888888";
-      case "Location": return "#ffc107";
-      case "center": return "#d32f2f";
-      default: return "#9c27b0";
+      case "Accused":
+        return "#ff6b35";
+      case "FIR":
+        return "#2b7be4";
+      case "Phone":
+        return "#888888";
+      case "Location":
+        return "#ffc107";
+      case "center":
+        return "#d32f2f";
+      default:
+        return "#9c27b0";
     }
   }
 
   getEdgeColor(type) {
     switch (type) {
-      case "arrested_with": return "#ff4444";
-      case "called": return "#4caf50";
-      case "linked_to": return "#ff9800";
-      case "visited": return "#2196f3";
-      case "operates_at": return "#9c27b0";
-      default: return "#cccccc";
+      case "arrested_with":
+        return "#ff4444";
+      case "called":
+        return "#4caf50";
+      case "linked_to":
+        return "#ff9800";
+      case "visited":
+        return "#2196f3";
+      case "operates_at":
+        return "#9c27b0";
+      default:
+        return "#cccccc";
     }
   }
 
@@ -341,7 +375,10 @@ class NetworkAnalyzer {
       target: resolved,
       network,
       visualization: vizData,
-      communities: network.total > 0 ? await this.getCommunitiesForNetwork(network.nodes) : [],
+      communities:
+        network.total > 0
+          ? await this.getCommunitiesForNetwork(network.nodes)
+          : [],
     };
   }
 
@@ -352,13 +389,16 @@ class NetworkAnalyzer {
     }
 
     // Search by name
-    const result = await this.client.query(`
+    const result = await this.client.query(
+      `
       MATCH (a:Accused)
       WHERE a.name CONTAINS $name
          OR ANY(alias IN a.aliases WHERE alias CONTAINS $name)
       RETURN a.accused_id AS id, a.name AS name, a.district AS district
       LIMIT 1
-    `, { name: query });
+    `,
+      { name: query },
+    );
 
     if (result.length > 0) {
       return { ...result[0], type: "Accused" };
@@ -369,8 +409,8 @@ class NetworkAnalyzer {
 
   async getCommunitiesForNetwork(nodes) {
     const communities = await this.detectCommunities();
-    const nodeIds = new Set(nodes.map(n => n.id));
-    return communities.filter(c => c.members.some(m => nodeIds.has(m)));
+    const nodeIds = new Set(nodes.map((n) => n.id));
+    return communities.filter((c) => c.members.some((m) => nodeIds.has(m)));
   }
 }
 
@@ -378,5 +418,8 @@ module.exports = NetworkAnalyzer;
 
 if (require.main === module) {
   console.log("=== Network Analysis Module Exported ===");
-  console.log("Methods available:", Object.getOwnPropertyNames(NetworkAnalyzer.prototype));
+  console.log(
+    "Methods available:",
+    Object.getOwnPropertyNames(NetworkAnalyzer.prototype),
+  );
 }

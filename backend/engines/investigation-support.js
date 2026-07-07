@@ -1,9 +1,9 @@
 /**
  * Investigation Support Engine
- * 
+ *
  * Similar case retrieval with outcome linkage, embedding search,
  * and investigative technique recommendations.
- * 
+ *
  * Tasks 8.1 + 8.2 + 8.3 + 8.4 + 8.5
  */
 
@@ -31,11 +31,13 @@ class CaseEmbeddingIndex {
       vector[Math.abs(hash) % 100] += 1;
     }
     const norm = Math.sqrt(vector.reduce((s, v) => s + v * v, 0)) || 1;
-    return vector.map(v => v / norm);
+    return vector.map((v) => v / norm);
   }
 
   cosineSimilarity(a, b) {
-    let dot = 0, normA = 0, normB = 0;
+    let dot = 0,
+      normA = 0,
+      normB = 0;
     for (let i = 0; i < a.length; i++) {
       dot += a[i] * b[i];
       normA += a[i] * a[i];
@@ -63,7 +65,8 @@ class CaseEmbeddingIndex {
   }
 
   searchFir(query, options = {}) {
-    const queryVector = typeof query === "string" ? this.simpleEmbed(query) : query;
+    const queryVector =
+      typeof query === "string" ? this.simpleEmbed(query) : query;
     const topK = options.topK || 10;
     const crimeTypeFilter = options.crime_type;
     const districtFilter = options.district;
@@ -75,8 +78,12 @@ class CaseEmbeddingIndex {
 
       const textSimilarity = this.cosineSimilarity(queryVector, entry.vector);
       const moVector = buildMOVector(entry.features);
-      const queryMoVector = options.queryFeatures ? buildMOVector(options.queryFeatures) : entry.vector;
-      const moSimilarity = options.queryFeatures ? this.cosineSimilarity(queryMoVector, moVector) : textSimilarity;
+      const queryMoVector = options.queryFeatures
+        ? buildMOVector(options.queryFeatures)
+        : entry.vector;
+      const moSimilarity = options.queryFeatures
+        ? this.cosineSimilarity(queryMoVector, moVector)
+        : textSimilarity;
 
       const combinedScore = textSimilarity * 0.4 + moSimilarity * 0.6;
 
@@ -101,7 +108,7 @@ class CaseEmbeddingIndex {
     const entry = this.index.get(firNo);
     if (!entry) return [];
     return this.searchFir(entry.vector, { ...entry.fir, topK: topK + 1 })
-      .filter(r => r.fir_no !== firNo)
+      .filter((r) => r.fir_no !== firNo)
       .slice(0, topK);
   }
 }
@@ -123,7 +130,7 @@ class SimilarCaseRetriever {
     if (currentCase.narrative_text) {
       const queryFeatures = extractMOFeatures(currentCase);
       const queryVector = this.embeddings.simpleEmbed(
-        `${currentCase.narrative_text} ${currentCase.crime_type}`
+        `${currentCase.narrative_text} ${currentCase.crime_type}`,
       );
       results = this.embeddings.searchFir(queryVector, {
         topK: topK + 1,
@@ -138,9 +145,9 @@ class SimilarCaseRetriever {
     }
 
     return results
-      .filter(r => r.fir_no !== exclude)
+      .filter((r) => r.fir_no !== exclude)
       .slice(0, topK)
-      .map(r => ({
+      .map((r) => ({
         ...r,
         shared_mo_features: this.findSharedMO(currentCase, r),
       }));
@@ -174,17 +181,36 @@ class SimilarCaseRetriever {
 // ============================================================
 
 const OUTCOME_TECHNIQUES = {
-  chargesheeted: ["mobile_tower_dump", "call_record_analysis", "witness_testimony", "forensic_evidence", "cctv_footage"],
-  convicted: ["confession", "forensic_recovery", "bank_account_trail", "fingerprint_match", "phone_geolocation"],
-  closed_unidentified: ["lacked_forensic_evidence", "witness_unavailable", "insufficient_leads"],
+  chargesheeted: [
+    "mobile_tower_dump",
+    "call_record_analysis",
+    "witness_testimony",
+    "forensic_evidence",
+    "cctv_footage",
+  ],
+  convicted: [
+    "confession",
+    "forensic_recovery",
+    "bank_account_trail",
+    "fingerprint_match",
+    "phone_geolocation",
+  ],
+  closed_unidentified: [
+    "lacked_forensic_evidence",
+    "witness_unavailable",
+    "insufficient_leads",
+  ],
   closed_after_trial: ["acquittal_due_to_lack_of_evidence", "plea_bargain"],
 };
 
 function linkOutcomeToTechnique(similarCases) {
-  return similarCases.map(c => {
+  return similarCases.map((c) => {
     const outcome = c.status || "under_investigation";
-    const techniques = OUTCOME_TECHNIQUES[outcome] || ["standard_investigation"];
-    const usedTechnique = techniques[Math.floor(Math.random() * techniques.length)];
+    const techniques = OUTCOME_TECHNIQUES[outcome] || [
+      "standard_investigation",
+    ];
+    const usedTechnique =
+      techniques[Math.floor(Math.random() * techniques.length)];
 
     return {
       ...c,
@@ -236,17 +262,26 @@ function formatInvestigationResponse(currentCase, similarCases) {
     return lines.join("\n");
   }
 
-  const successCount = similarCases.filter(c => c.outcome === "chargesheeted" || c.outcome === "convicted").length;
+  const successCount = similarCases.filter(
+    (c) => c.outcome === "chargesheeted" || c.outcome === "convicted",
+  ).length;
   const solvedRate = ((successCount / similarCases.length) * 100).toFixed(0);
-  lines.push(`📊 Similar Cases Found: ${similarCases.length} | Solved: ${solvedRate}%`);
+  lines.push(
+    `📊 Similar Cases Found: ${similarCases.length} | Solved: ${solvedRate}%`,
+  );
   lines.push("");
 
   for (let i = 0; i < similarCases.length; i++) {
     const c = similarCases[i];
     const scoreStr = (c.score * 100).toFixed(0);
-    const outcomeEmoji = c.outcome === "convicted" ? "✅" :
-      c.outcome === "chargesheeted" ? "📋" :
-      c.outcome === "closed_unidentified" ? "❌" : "🔄";
+    const outcomeEmoji =
+      c.outcome === "convicted"
+        ? "✅"
+        : c.outcome === "chargesheeted"
+          ? "📋"
+          : c.outcome === "closed_unidentified"
+            ? "❌"
+            : "🔄";
 
     lines.push(`${i + 1}. ${outcomeEmoji} ${c.fir_no}`);
     lines.push(`   Match: ${scoreStr}% | ${c.crime_type} in ${c.district}`);
@@ -262,21 +297,30 @@ function formatInvestigationResponse(currentCase, similarCases) {
   const bestTechniques = {};
   for (const c of similarCases) {
     if (c.outcome === "chargesheeted" || c.outcome === "convicted") {
-      bestTechniques[c.technique_name] = (bestTechniques[c.technique_name] || 0) + 1;
+      bestTechniques[c.technique_name] =
+        (bestTechniques[c.technique_name] || 0) + 1;
     }
   }
 
-  const rankedTechniques = Object.entries(bestTechniques).sort((a, b) => b[1] - a[1]);
+  const rankedTechniques = Object.entries(bestTechniques).sort(
+    (a, b) => b[1] - a[1],
+  );
   if (rankedTechniques.length > 0) {
     lines.push("💡 RECOMMENDED INVESTIGATIVE LEADS");
     for (const [technique, count] of rankedTechniques.slice(0, 3)) {
-      lines.push(`   • ${technique} (used in ${count}/${successCount} similar solved cases)`);
+      lines.push(
+        `   • ${technique} (used in ${count}/${successCount} similar solved cases)`,
+      );
     }
     lines.push("");
   }
 
-  lines.push(`📎 Sources: ${currentName} + ${similarCases.length} similar cases`);
-  lines.push(`⚠️ AI-generated recommendations. Verify with official records before operational use.`);
+  lines.push(
+    `📎 Sources: ${currentName} + ${similarCases.length} similar cases`,
+  );
+  lines.push(
+    `⚠️ AI-generated recommendations. Verify with official records before operational use.`,
+  );
 
   return lines.join("\n");
 }
@@ -310,9 +354,10 @@ class InvestigationSupportEngine {
       current_case: currentCase.fir_no || "new",
       similar_cases: enriched,
       count: enriched.length,
-      solved_rate: enriched.filter(c =>
-        c.outcome === "chargesheeted" || c.outcome === "convicted"
-      ).length / Math.max(1, enriched.length),
+      solved_rate:
+        enriched.filter(
+          (c) => c.outcome === "chargesheeted" || c.outcome === "convicted",
+        ).length / Math.max(1, enriched.length),
       recommended_techniques: this.getRecommendedTechniques(enriched),
       report: formatted,
     };
@@ -322,7 +367,8 @@ class InvestigationSupportEngine {
     const techniqueCounts = {};
     for (const c of similarCases) {
       if (c.outcome === "chargesheeted" || c.outcome === "convicted") {
-        techniqueCounts[c.technique_name] = (techniqueCounts[c.technique_name] || 0) + 1;
+        techniqueCounts[c.technique_name] =
+          (techniqueCounts[c.technique_name] || 0) + 1;
       }
     }
 
@@ -331,9 +377,11 @@ class InvestigationSupportEngine {
       .slice(0, 3)
       .map(([technique, count]) => ({
         technique,
-        used_in: `${count}/${similarCases.filter(c =>
-          c.outcome === "chargesheeted" || c.outcome === "convicted"
-        ).length} solved cases`,
+        used_in: `${count}/${
+          similarCases.filter(
+            (c) => c.outcome === "chargesheeted" || c.outcome === "convicted",
+          ).length
+        } solved cases`,
       }));
   }
 }
@@ -352,7 +400,10 @@ if (require.main === module) {
 
   console.log("=== Investigation Support Engine ===\n");
   const firs = JSON.parse(
-    fs.readFileSync(path.join(__dirname, "../../data/synthetic/output/firs.json"), "utf8")
+    fs.readFileSync(
+      path.join(__dirname, "../../data/synthetic/output/firs.json"),
+      "utf8",
+    ),
   );
 
   async function run() {
@@ -360,11 +411,15 @@ if (require.main === module) {
     await engine.initialize(firs);
 
     const testCase = firs[0];
-    console.log(`Query: find similar to ${testCase.fir_no} (${testCase.crime_type})\n`);
+    console.log(
+      `Query: find similar to ${testCase.fir_no} (${testCase.crime_type})\n`,
+    );
 
     const result = await engine.findSimilar(testCase);
     console.log(result.report);
-    console.log(`\nFound: ${result.count} cases, Solved rate: ${(result.solved_rate * 100).toFixed(0)}%`);
+    console.log(
+      `\nFound: ${result.count} cases, Solved rate: ${(result.solved_rate * 100).toFixed(0)}%`,
+    );
   }
 
   run().catch(console.error);

@@ -1,9 +1,9 @@
 /**
  * Crime DNA Engine — MO Feature Extraction, Vector Building, Similarity Search
- * 
+ *
  * The killer feature: when a new FIR arrives, extract its DNA signature,
  * match against history, detect patterns, generate intelligence.
- * 
+ *
  * Tasks 5.1 + 5.2 + 5.3
  */
 
@@ -17,13 +17,13 @@ const MO_FEATURES = {
       "broke window": "window_break",
       "broke into": "forced_entry",
       "forced the lock": "lock_forcing",
-      "climbing": "climbing",
+      climbing: "climbing",
       "duplicate key": "key_duplication",
-      "door": "door_entry",
-      "rear": "rear_entry",
-      "window": "window_entry",
-      "wall": "wall_climbing",
-      "roof": "roof_entry",
+      door: "door_entry",
+      rear: "rear_entry",
+      window: "window_entry",
+      wall: "wall_climbing",
+      roof: "roof_entry",
     },
     default: "unknown",
   },
@@ -39,27 +39,27 @@ const MO_FEATURES = {
   },
   target_type: {
     keywords: {
-      "jewelry": "jewelry_shop",
-      "shop": "shop",
-      "house": "residence",
-      "residential": "residence",
-      "commercial": "commercial",
-      "vehicle": "vehicle",
-      "person": "person",
-      "chain": "chain_snatch_target",
-      "mobile": "mobile_phone",
-      "cash": "cash",
+      jewelry: "jewelry_shop",
+      shop: "shop",
+      house: "residence",
+      residential: "residence",
+      commercial: "commercial",
+      vehicle: "vehicle",
+      person: "person",
+      chain: "chain_snatch_target",
+      mobile: "mobile_phone",
+      cash: "cash",
     },
     default: "unknown",
   },
   weapon_tool: {
     keywords: {
-      "knife": "knife",
-      "weapon": "weapon",
-      "stick": "stick",
-      "rod": "rod",
-      "screwdriver": "screwdriver",
-      "hammer": "hammer",
+      knife: "knife",
+      weapon: "weapon",
+      stick: "stick",
+      rod: "rod",
+      screwdriver: "screwdriver",
+      hammer: "hammer",
       "bare hands": "unarmed",
       "no weapon": "unarmed",
     },
@@ -67,38 +67,38 @@ const MO_FEATURES = {
   },
   escape_method: {
     keywords: {
-      "motorcycle": "motorcycle",
-      "bike": "motorcycle",
-      "scooter": "motorcycle",
-      "car": "car",
-      "auto": "auto_rickshaw",
-      "ran": "on_foot",
-      "walked": "on_foot",
-      "fled": "fled",
+      motorcycle: "motorcycle",
+      bike: "motorcycle",
+      scooter: "motorcycle",
+      car: "car",
+      auto: "auto_rickshaw",
+      ran: "on_foot",
+      walked: "on_foot",
+      fled: "fled",
     },
     default: "unknown",
   },
   victim_profile: {
     keywords: {
-      "elderly": "elderly",
-      "old": "elderly",
-      "woman": "female",
-      "man": "male",
-      "alone": "alone",
-      "single": "single_occupant",
-      "family": "family",
-      "shopkeeper": "business_owner",
+      elderly: "elderly",
+      old: "elderly",
+      woman: "female",
+      man: "male",
+      alone: "alone",
+      single: "single_occupant",
+      family: "family",
+      shopkeeper: "business_owner",
     },
     default: "general",
   },
   location_type: {
     keywords: {
-      "market": "commercial_area",
-      "road": "roadside",
-      "lane": "narrow_lane",
-      "colony": "residential_area",
-      "station": "transit_point",
-      "near": "near_landmark",
+      market: "commercial_area",
+      road: "roadside",
+      lane: "narrow_lane",
+      colony: "residential_area",
+      station: "transit_point",
+      near: "near_landmark",
     },
     default: "unknown",
   },
@@ -163,8 +163,16 @@ function buildVocabulary() {
   }
 
   // Add crime types
-  const crimeTypes = ["theft", "chain_snatching", "burglary", "robbery",
-    "cyber_fraud", "drug_offense", "assault", "cheating"];
+  const crimeTypes = [
+    "theft",
+    "chain_snatching",
+    "burglary",
+    "robbery",
+    "cyber_fraud",
+    "drug_offense",
+    "assault",
+    "cheating",
+  ];
   for (const ct of crimeTypes) {
     allValues.push(`crime_type:${ct}`);
   }
@@ -193,7 +201,7 @@ function buildMOVector(features) {
 
   // Normalize
   const norm = Math.sqrt(vector.reduce((s, v) => s + v * v, 0)) || 1;
-  return vector.map(v => v / norm);
+  return vector.map((v) => v / norm);
 }
 
 // ============================================================
@@ -227,7 +235,9 @@ class MOSimilaritySearch {
   }
 
   cosineSimilarity(a, b) {
-    let dot = 0, normA = 0, normB = 0;
+    let dot = 0,
+      normA = 0,
+      normB = 0;
     for (let i = 0; i < a.length; i++) {
       dot += a[i] * b[i];
       normA += a[i] * a[i];
@@ -240,11 +250,13 @@ class MOSimilaritySearch {
     if (!fir1.lat || !fir1.long || !fir2.lat || !fir2.long) return true;
 
     const R = 6371;
-    const dLat = (fir2.lat - fir1.lat) * Math.PI / 180;
-    const dLon = (fir2.long - fir1.long) * Math.PI / 180;
-    const a = Math.sin(dLat / 2) ** 2 +
-      Math.cos(fir1.lat * Math.PI / 180) * Math.cos(fir2.lat * Math.PI / 180) *
-      Math.sin(dLon / 2) ** 2;
+    const dLat = ((fir2.lat - fir1.lat) * Math.PI) / 180;
+    const dLon = ((fir2.long - fir1.long) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) ** 2 +
+      Math.cos((fir1.lat * Math.PI) / 180) *
+        Math.cos((fir2.lat * Math.PI) / 180) *
+        Math.sin(dLon / 2) ** 2;
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c <= maxDistanceKm;
   }
@@ -314,7 +326,8 @@ class MOSimilaritySearch {
 
     for (let i = 0; i < this.firs.length; i++) {
       const other = this.firs[i];
-      if (!this.geographicProximity(fir, other, options.maxDistanceKm || 50)) continue;
+      if (!this.geographicProximity(fir, other, options.maxDistanceKm || 50))
+        continue;
 
       const otherEntry = this.index.get(other.fir_no);
       if (!otherEntry) continue;
@@ -368,18 +381,20 @@ class PatternDetector {
       applyTimeDecay: false,
     });
 
-    const highMatch = similar.filter(r => r.score >= threshold);
+    const highMatch = similar.filter((r) => r.score >= threshold);
     if (highMatch.length < minCluster) {
       return { pattern_detected: false, matches: highMatch };
     }
 
     const clusters = this.clusterByGeography(highMatch);
-    const detectedClusters = clusters.filter(c => c.members.length >= minCluster);
+    const detectedClusters = clusters.filter(
+      (c) => c.members.length >= minCluster,
+    );
 
     return {
       pattern_detected: detectedClusters.length > 0,
       matches: highMatch,
-      clusters: detectedClusters.map(c => ({
+      clusters: detectedClusters.map((c) => ({
         center_lat: c.center.lat,
         center_long: c.center.long,
         radius_km: c.radius,
@@ -398,18 +413,20 @@ class PatternDetector {
       applyTimeDecay: false,
     });
 
-    const highMatch = similar.filter(r => r.score >= threshold);
+    const highMatch = similar.filter((r) => r.score >= threshold);
     if (highMatch.length < minCluster) {
       return { pattern_detected: false, matches: highMatch };
     }
 
     const clusters = this.clusterByGeography(highMatch);
-    const detectedClusters = clusters.filter(c => c.members.length >= minCluster);
+    const detectedClusters = clusters.filter(
+      (c) => c.members.length >= minCluster,
+    );
 
     return {
       pattern_detected: detectedClusters.length > 0,
       matches: highMatch,
-      clusters: detectedClusters.map(c => ({
+      clusters: detectedClusters.map((c) => ({
         center_lat: c.center.lat,
         center_long: c.center.long,
         radius_km: c.radius,
@@ -426,13 +443,19 @@ class PatternDetector {
       let added = false;
       for (const cluster of clusters) {
         const dist = this.haversine(
-          cluster.center.lat, cluster.center.long,
-          parseFloat(r.lat || 0), parseFloat(r.long || r.lat || 0)
+          cluster.center.lat,
+          cluster.center.long,
+          parseFloat(r.lat || 0),
+          parseFloat(r.long || r.lat || 0),
         );
         if (dist <= this.CLUSTER_RADIUS_KM) {
           cluster.members.push(r);
-          cluster.center.lat = cluster.members.reduce((s, m) => s + parseFloat(m.lat || 0), 0) / cluster.members.length;
-          cluster.center.long = cluster.members.reduce((s, m) => s + parseFloat(m.long || 0), 0) / cluster.members.length;
+          cluster.center.lat =
+            cluster.members.reduce((s, m) => s + parseFloat(m.lat || 0), 0) /
+            cluster.members.length;
+          cluster.center.long =
+            cluster.members.reduce((s, m) => s + parseFloat(m.long || 0), 0) /
+            cluster.members.length;
           added = true;
           break;
         }
@@ -454,11 +477,13 @@ class PatternDetector {
 
   haversine(lat1, lon1, lat2, lon2) {
     const R = 6371;
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = Math.sin(dLat / 2) ** 2 +
-      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-      Math.sin(dLon / 2) ** 2;
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLon = ((lon2 - lon1) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) ** 2 +
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLon / 2) ** 2;
     return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   }
 }
@@ -482,7 +507,12 @@ function formatCrimeDNAReport(fir, patternResult, matches) {
   const features = extractMOFeatures(fir);
   for (const [key, val] of Object.entries(features)) {
     if (val !== "unknown") {
-      const displayVal = typeof val === 'string' ? val.replace(/_/g, " ") : Array.isArray(val) ? val.join(", ") : String(val);
+      const displayVal =
+        typeof val === "string"
+          ? val.replace(/_/g, " ")
+          : Array.isArray(val)
+            ? val.join(", ")
+            : String(val);
       report.push(`   ${key.replace(/_/g, " ")}: ${displayVal}`);
     }
   }
@@ -494,9 +524,13 @@ function formatCrimeDNAReport(fir, patternResult, matches) {
     report.push(`🔍 TOP MATCHES`);
     for (const m of topMatches) {
       const linkStatus = m.linked ? "LINKED" : "NO LINK";
-      report.push(`   ${m.fir_no} (${(m.score * 100).toFixed(0)}%) — ${m.crime_type}, ${m.district} [${linkStatus}]`);
+      report.push(
+        `   ${m.fir_no} (${(m.score * 100).toFixed(0)}%) — ${m.crime_type}, ${m.district} [${linkStatus}]`,
+      );
       if (m.shared_features && m.shared_features.length > 0) {
-        report.push(`      Shared: ${m.shared_features.slice(0, 4).join(", ")}`);
+        report.push(
+          `      Shared: ${m.shared_features.slice(0, 4).join(", ")}`,
+        );
       }
     }
     report.push("");
@@ -505,10 +539,14 @@ function formatCrimeDNAReport(fir, patternResult, matches) {
   // Pattern detection
   if (patternResult.pattern_detected) {
     report.push(`⚠️ PATTERN ALERT`);
-    report.push(`   Detected ${patternResult.clusters.length} cluster(s) with similar MO`);
+    report.push(
+      `   Detected ${patternResult.clusters.length} cluster(s) with similar MO`,
+    );
     for (const c of patternResult.clusters) {
-      report.push(`   Cluster: ${c.members.length} FIRs in ${c.radius_km}km radius`);
-      report.push(`   Members: ${c.members.map(m => m.fir_no).join(", ")}`);
+      report.push(
+        `   Cluster: ${c.members.length} FIRs in ${c.radius_km}km radius`,
+      );
+      report.push(`   Members: ${c.members.map((m) => m.fir_no).join(", ")}`);
     }
   } else {
     report.push(`✅ No active pattern detected`);
@@ -521,13 +559,17 @@ function formatCrimeDNAReport(fir, patternResult, matches) {
     const topMatch = topMatches[0];
     report.push(`   • Review FIR ${topMatch.fir_no} for case parallels`);
     if (topMatch.shared_features && topMatch.shared_features.length > 0) {
-      report.push(`   • Focus on shared MO elements: ${topMatch.shared_features.slice(0, 3).join(", ")}`);
+      report.push(
+        `   • Focus on shared MO elements: ${topMatch.shared_features.slice(0, 3).join(", ")}`,
+      );
     }
   }
   report.push("");
 
   report.push(`📎 Sources: ${firNo} + ${topMatches.length} matched FIRs`);
-  report.push(`⚠️ Disclaimer: AI-generated leads. Verify with official records.`);
+  report.push(
+    `⚠️ Disclaimer: AI-generated leads. Verify with official records.`,
+  );
 
   return report.join("\n");
 }
@@ -604,7 +646,10 @@ if (require.main === module) {
   const path = require("path");
 
   const firs = JSON.parse(
-    fs.readFileSync(path.join(__dirname, "../../data/synthetic/output/firs.json"), "utf8")
+    fs.readFileSync(
+      path.join(__dirname, "../../data/synthetic/output/firs.json"),
+      "utf8",
+    ),
   );
 
   console.log("=== Crime DNA Engine E2E Test (Task 5.7) ===\n");
@@ -614,7 +659,9 @@ if (require.main === module) {
     await engine.initialize(firs);
 
     const testFir = firs[0];
-    console.log(`Testing with FIR: ${testFir.fir_no} (${testFir.crime_type})\n`);
+    console.log(
+      `Testing with FIR: ${testFir.fir_no} (${testFir.crime_type})\n`,
+    );
 
     const result = await engine.analyzeExistingFIR(testFir.fir_no);
     console.log(result.report);

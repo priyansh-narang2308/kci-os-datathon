@@ -1,8 +1,8 @@
 /**
  * Crime Forecasting & Early Warning Engine
- * 
+ *
  * Hotspot prediction, temporal forecasting, early warning rules, alert system.
- * 
+ *
  * Tasks 7.1 + 7.2 + 7.3 + 7.4 + 7.5 + 7.6 + 7.7
  */
 
@@ -27,9 +27,12 @@ class KDEBaseline {
 
   buildGrid(firs) {
     const cells = {};
-    let minLat = 90, maxLat = -90, minLng = 180, maxLng = -180;
+    let minLat = 90,
+      maxLat = -90,
+      minLng = 180,
+      maxLng = -180;
 
-    const validFirs = firs.filter(f => f.lat && f.long);
+    const validFirs = firs.filter((f) => f.lat && f.long);
     if (validFirs.length === 0) return {};
 
     for (const fir of validFirs) {
@@ -44,8 +47,16 @@ class KDEBaseline {
     for (const fir of validFirs) {
       const centerLat = this._snapCoord(fir.lat);
       const centerLng = this._snapCoord(fir.long);
-      for (let lat = centerLat - 0.5; lat <= centerLat + 0.5 + this.GRID_SIZE; lat += this.GRID_SIZE) {
-        for (let lng = centerLng - 0.5; lng <= centerLng + 0.5 + this.GRID_SIZE; lng += this.GRID_SIZE) {
+      for (
+        let lat = centerLat - 0.5;
+        lat <= centerLat + 0.5 + this.GRID_SIZE;
+        lat += this.GRID_SIZE
+      ) {
+        for (
+          let lng = centerLng - 0.5;
+          lng <= centerLng + 0.5 + this.GRID_SIZE;
+          lng += this.GRID_SIZE
+        ) {
           const key = this._cellKey(lat, lng);
           if (!seenKeys.has(key)) {
             seenKeys.add(key);
@@ -67,14 +78,15 @@ class KDEBaseline {
       const key = this._cellKey(fir.lat, fir.long);
       if (cells[key]) {
         cells[key].count++;
-        cells[key].crime_types[fir.crime_type] = (cells[key].crime_types[fir.crime_type] || 0) + 1;
+        cells[key].crime_types[fir.crime_type] =
+          (cells[key].crime_types[fir.crime_type] || 0) + 1;
         cells[key].firs.push(fir.fir_no);
       }
     }
 
     // KDE smoothing (all cells, sourced from populated cells only)
     const cellKeys = Object.keys(cells);
-    const populatedKeys = cellKeys.filter(k => cells[k].count > 0);
+    const populatedKeys = cellKeys.filter((k) => cells[k].count > 0);
     for (const key of cellKeys) {
       const cell = cells[key];
       let density = 0;
@@ -96,20 +108,22 @@ class KDEBaseline {
 
   haversine(lat1, lon1, lat2, lon2) {
     const R = 6371;
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = Math.sin(dLat / 2) ** 2 +
-      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-      Math.sin(dLon / 2) ** 2;
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLon = ((lon2 - lon1) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) ** 2 +
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLon / 2) ** 2;
     return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   }
 
   getHotspots(topN = 10) {
     const cells = Object.values(this.gridCells)
-      .filter(c => c.intensity > 0)
+      .filter((c) => c.intensity > 0)
       .sort((a, b) => b.intensity - a.intensity);
 
-    return cells.slice(0, topN).map(c => ({
+    return cells.slice(0, topN).map((c) => ({
       lat: c.lat,
       long: c.long,
       intensity: c.intensity,
@@ -123,8 +137,8 @@ class KDEBaseline {
 
   getHeatmapData() {
     return Object.values(this.gridCells)
-      .filter(c => c.intensity > 0)
-      .map(c => ({
+      .filter((c) => c.intensity > 0)
+      .map((c) => ({
         lat: c.lat,
         long: c.long,
         intensity: c.intensity,
@@ -168,9 +182,11 @@ class TemporalForecaster {
       const days = Object.keys(daily).sort();
       if (days.length < 7) continue;
 
-      const values = days.map(d => daily[d]);
+      const values = days.map((d) => daily[d]);
       const mean = values.reduce((s, v) => s + v, 0) / values.length;
-      const std = Math.sqrt(values.reduce((s, v) => s + (v - mean) ** 2, 0) / values.length);
+      const std = Math.sqrt(
+        values.reduce((s, v) => s + (v - mean) ** 2, 0) / values.length,
+      );
 
       this.models[key] = {
         mean,
@@ -231,7 +247,10 @@ class TemporalForecaster {
       const dayOfWeek = date.getDay();
 
       // Simple forecast: mean + day-of-week adjustment
-      const dowFactor = (model.seasonality.day_of_week[["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][dayOfWeek]] / model.mean) || 1;
+      const dowFactor =
+        model.seasonality.day_of_week[
+          ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][dayOfWeek]
+        ] / model.mean || 1;
       const predicted = model.mean * dowFactor;
 
       forecasts.push({
@@ -252,7 +271,9 @@ class TemporalForecaster {
         data_points: model.days_count,
       },
       forecast: forecasts,
-      next_7_days_total: forecasts.slice(0, 7).reduce((s, f) => s + f.predicted, 0),
+      next_7_days_total: forecasts
+        .slice(0, 7)
+        .reduce((s, f) => s + f.predicted, 0),
       next_30_days_total: forecasts.reduce((s, f) => s + f.predicted, 0),
     };
   }
@@ -275,8 +296,8 @@ class ForecastBacktester {
     splitDate.setDate(splitDate.getDate() - testDays);
     const splitStr = splitDate.toISOString().split("T")[0];
 
-    const trainData = this.firs.filter(f => f.date_filed < splitStr);
-    const testData = this.firs.filter(f => f.date_filed >= splitStr);
+    const trainData = this.firs.filter((f) => f.date_filed < splitStr);
+    const testData = this.firs.filter((f) => f.date_filed >= splitStr);
 
     if (trainData.length === 0 || testData.length === 0) {
       return { error: "Insufficient data for backtest split" };
@@ -292,8 +313,10 @@ class ForecastBacktester {
     // Count how many new FIRs fell in predicted areas
     let hits = 0;
     const gridKeys = Object.keys(this.kde.gridCells);
-    const threshold = gridKeys.map(k => this.kde.gridCells[k].intensity)
-      .sort((a, b) => b - a)[Math.min(10, gridKeys.length - 1)] || 0;
+    const threshold =
+      gridKeys
+        .map((k) => this.kde.gridCells[k].intensity)
+        .sort((a, b) => b - a)[Math.min(10, gridKeys.length - 1)] || 0;
 
     for (const fir of testData) {
       if (!fir.lat || !fir.long) continue;
@@ -317,7 +340,12 @@ class ForecastBacktester {
       hits,
       precision_at_10: parseFloat(precision.toFixed(4)),
       recall_at_10: parseFloat(recall.toFixed(4)),
-      f1_score: parseFloat((2 * precision * recall / Math.max(0.001, precision + recall)).toFixed(4)),
+      f1_score: parseFloat(
+        (
+          (2 * precision * recall) /
+          Math.max(0.001, precision + recall)
+        ).toFixed(4),
+      ),
     };
   }
 }
@@ -364,7 +392,7 @@ class EarlyWarningEngine {
           severity: "WARNING",
           title: `Emerging ${crimeType.replace(/_/g, " ")} pattern in ${district}`,
           description: `${firs.length} similar MOs detected in 7 days in ${district}`,
-          linked_firs: firs.map(f => f.fir_no),
+          linked_firs: firs.map((f) => f.fir_no),
           affected_area: district,
           recommended_action: `Increase patrols in ${district}. Review ${firs.length} recent FIRs for common MO elements.`,
           created_at: new Date().toISOString(),
@@ -405,7 +433,12 @@ class EarlyWarningEngine {
           severity: "CRITICAL",
           title: `Anomalous spike: ${crimeType.replace(/_/g, " ")} in ${district}`,
           description: `${weekCount} cases in 7 days vs weekly average of ${weeklyAvg.toFixed(1)}`,
-          linked_firs: this.firs.filter(f => f.district === district && f.crime_type === crimeType).slice(0, 5).map(f => f.fir_no),
+          linked_firs: this.firs
+            .filter(
+              (f) => f.district === district && f.crime_type === crimeType,
+            )
+            .slice(0, 5)
+            .map((f) => f.fir_no),
           affected_area: district,
           recommended_action: `Immediate attention required. ${weekCount} ${crimeType.replace(/_/g, " ")} cases in ${district} this week. Deploy additional resources.`,
           created_at: new Date().toISOString(),
@@ -424,12 +457,15 @@ class EarlyWarningEngine {
     // Count recent FIRs per accused from in-memory data
     const accusedCounts = {};
     for (const fir of this.firs) {
-      if (!fir.accused_ids || !fir.date_filed || fir.date_filed < cutoff) continue;
+      if (!fir.accused_ids || !fir.date_filed || fir.date_filed < cutoff)
+        continue;
       for (const id of fir.accused_ids) {
-        if (!accusedCounts[id]) accusedCounts[id] = { count: 0, fir_nos: [], last_date: "" };
+        if (!accusedCounts[id])
+          accusedCounts[id] = { count: 0, fir_nos: [], last_date: "" };
         accusedCounts[id].count++;
         accusedCounts[id].fir_nos.push(fir.fir_no);
-        if (fir.date_filed > accusedCounts[id].last_date) accusedCounts[id].last_date = fir.date_filed;
+        if (fir.date_filed > accusedCounts[id].last_date)
+          accusedCounts[id].last_date = fir.date_filed;
       }
     }
 
@@ -450,13 +486,13 @@ class EarlyWarningEngine {
   }
 
   getAlertsBySeverity(severity) {
-    return this.alerts.filter(a => a.severity === severity);
+    return this.alerts.filter((a) => a.severity === severity);
   }
 
   getActiveAlerts() {
     const oneDayAgo = new Date();
     oneDayAgo.setDate(oneDayAgo.getDate() - 1);
-    return this.alerts.filter(a => new Date(a.created_at) >= oneDayAgo);
+    return this.alerts.filter((a) => new Date(a.created_at) >= oneDayAgo);
   }
 }
 
@@ -492,18 +528,22 @@ class AlertGenerator {
   }
 
   acknowledgeAlert(alertId, officerId) {
-    const alert = this.activeAlerts.find(a => a.alert_id === alertId);
+    const alert = this.activeAlerts.find((a) => a.alert_id === alertId);
     if (alert) {
       alert.status = "acknowledged";
       alert.acknowledged_at = new Date().toISOString();
       alert.acknowledged_by = officerId;
-      this.activeAlerts = this.activeAlerts.filter(a => a.alert_id !== alertId);
+      this.activeAlerts = this.activeAlerts.filter(
+        (a) => a.alert_id !== alertId,
+      );
     }
     return alert;
   }
 
   getAlertsByOfficer(district) {
-    return this.activeAlerts.filter(a => !a.affected_area || a.affected_area === district);
+    return this.activeAlerts.filter(
+      (a) => !a.affected_area || a.affected_area === district,
+    );
   }
 
   getAllAlerts() {
@@ -535,11 +575,44 @@ class ForecastingEngine {
     this.earlyWarning.evaluateAllRules();
     // Seed demo alerts if none generated by rules
     if (this.alertGenerator.getAllAlerts().length === 0) {
-      const districts = [...new Set(firs.filter(f => f.district).map(f => f.district))];
+      const districts = [
+        ...new Set(firs.filter((f) => f.district).map((f) => f.district)),
+      ];
       const ct = "chain_snatching";
-      this.alertGenerator.generateAlert("mo_cluster", "critical", "Emerging MO Pattern — Chain Snatching", `3+ similar chain-snatching MOs detected in ${districts[0] || "Mysuru"} within 7 days`, { district: districts[0] || "Mysuru", firs: firs.filter(f => f.crime_type === ct).slice(0, 4).map(f => f.fir_no), action: "Deploy patrols at hotspot locations during evening hours" });
-      this.alertGenerator.generateAlert("repeat_offender", "warning", "Repeat Offender Activity Spike", "ACC_001 linked to 3 new FIRs in Bengaluru Urban — review custody status", { district: "Bengaluru Urban", action: "Coordinate with jurisdictional PS for supervision" });
-      this.alertGenerator.generateAlert("anomaly", "info", "Forecast Anomaly — Theft Rate", `Theft rate in ${districts[1] || "Mangaluru"} exceeds 2σ threshold for this season`, { district: districts[1] || "Mangaluru", action: "Analyze contributing factors for quarterly crime review" });
+      this.alertGenerator.generateAlert(
+        "mo_cluster",
+        "critical",
+        "Emerging MO Pattern — Chain Snatching",
+        `3+ similar chain-snatching MOs detected in ${districts[0] || "Mysuru"} within 7 days`,
+        {
+          district: districts[0] || "Mysuru",
+          firs: firs
+            .filter((f) => f.crime_type === ct)
+            .slice(0, 4)
+            .map((f) => f.fir_no),
+          action: "Deploy patrols at hotspot locations during evening hours",
+        },
+      );
+      this.alertGenerator.generateAlert(
+        "repeat_offender",
+        "warning",
+        "Repeat Offender Activity Spike",
+        "ACC_001 linked to 3 new FIRs in Bengaluru Urban — review custody status",
+        {
+          district: "Bengaluru Urban",
+          action: "Coordinate with jurisdictional PS for supervision",
+        },
+      );
+      this.alertGenerator.generateAlert(
+        "anomaly",
+        "info",
+        "Forecast Anomaly — Theft Rate",
+        `Theft rate in ${districts[1] || "Mangaluru"} exceeds 2σ threshold for this season`,
+        {
+          district: districts[1] || "Mangaluru",
+          action: "Analyze contributing factors for quarterly crime review",
+        },
+      );
     }
     this.initialized = true;
     console.log("[Forecasting] Initialized");
@@ -582,7 +655,10 @@ if (require.main === module) {
 
   console.log("=== Forecasting Engine Module Exported ===\n");
   const firs = JSON.parse(
-    fs.readFileSync(path.join(__dirname, "../../data/synthetic/output/firs.json"), "utf8")
+    fs.readFileSync(
+      path.join(__dirname, "../../data/synthetic/output/firs.json"),
+      "utf8",
+    ),
   );
 
   const engine = ForecastingEngine;
