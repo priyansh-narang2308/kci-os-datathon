@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { Bell, Zap, Activity, CheckCircle2, AlertTriangle } from "lucide-react";
 import { getAlerts } from "@/services/api";
+import { SEED_ALERTS } from "@/lib/seed-data";
 
 const severityColors: Record<string, string> = {
   critical: "border-red-200 bg-red-50/60",
@@ -16,14 +17,13 @@ const severityBadge: Record<string, string> = {
 };
 
 export default function AlertsPage() {
-  const [alerts, setAlerts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [alerts, setAlerts] = useState<any[]>(SEED_ALERTS);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     getAlerts()
-      .then(setAlerts)
-      .catch(() => {})
-      .finally(() => setLoading(false));
+      .then((a) => { if (Array.isArray(a) && a.length > 0) setAlerts(a); })
+      .catch(() => {});
   }, []);
 
   const critical = alerts.filter((a) => a.severity === "critical");

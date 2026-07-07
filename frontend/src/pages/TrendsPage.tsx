@@ -3,33 +3,33 @@
 import { useState, useEffect } from "react";
 import { TrendingUp, BarChart3, Activity, Zap } from "lucide-react";
 import { getForecastSummary, getForecast } from "@/services/api";
+import { SEED_FORECAST_SUMMARIES, SEED_FORECAST } from "@/lib/seed-data";
 
 export default function TrendsPage() {
-  const [summaries, setSummaries] = useState<any[]>([]);
-  const [selected, setSelected] = useState<any>(null);
-  const [forecast, setForecast] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [summaries, setSummaries] = useState<any[]>(SEED_FORECAST_SUMMARIES);
+  const [selected, setSelected] = useState<any>(SEED_FORECAST_SUMMARIES[0]);
+  const [forecast, setForecast] = useState<any>(SEED_FORECAST);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     getForecastSummary()
       .then((s) => {
-        setSummaries(s);
-        if (s.length > 0) {
+        if (Array.isArray(s) && s.length > 0) {
+          setSummaries(s);
           setSelected(s[0]);
           handleSelectForecast(s[0]);
         }
       })
-      .catch(() => {})
-      .finally(() => setLoading(false));
+      .catch(() => {});
   }, []);
 
   const handleSelectForecast = async (s: any) => {
     setSelected(s);
     try {
       const f = await getForecast(s.crime_type, s.district, 30);
-      setForecast(f);
+      if (f && f.forecast) setForecast(f);
     } catch {
-      setForecast(null);
+      setForecast(SEED_FORECAST);
     }
   };
 

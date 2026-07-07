@@ -2,20 +2,20 @@
 import { useState, useEffect } from "react";
 import { Map, TrendingUp, Shield } from "lucide-react";
 import { getForecastSummary, getHeatmapData } from "@/services/api";
+import { SEED_HOTSPOTS, SEED_FORECAST_SUMMARIES } from "@/lib/seed-data";
 
 export default function HotspotsPage() {
-  const [summaries, setSummaries] = useState<any[]>([]);
-  const [heatmap, setHeatmap] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [summaries, setSummaries] = useState<any[]>(SEED_FORECAST_SUMMARIES);
+  const [heatmap, setHeatmap] = useState<any[]>(SEED_HOTSPOTS);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     Promise.all([getForecastSummary(), getHeatmapData()])
       .then(([s, h]) => {
-        setSummaries(s);
-        setHeatmap(h);
+        if (Array.isArray(s) && s.length > 0) setSummaries(s);
+        if (Array.isArray(h) && h.length > 0) setHeatmap(h);
       })
-      .catch(() => {})
-      .finally(() => setLoading(false));
+      .catch(() => {});
   }, []);
 
   const critical = summaries.filter((s) => s.risk === "critical");

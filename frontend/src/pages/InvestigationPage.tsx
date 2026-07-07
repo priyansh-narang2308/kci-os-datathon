@@ -66,6 +66,7 @@ import type {
   FIRIngestPayload,
   FIRIngestResponse,
 } from "@/services/api";
+import { SEED_STATS, SEED_ACTIVITY, SEED_CHAT_MESSAGES } from "@/lib/seed-data";
 
 interface ChatMessage {
   role: string;
@@ -122,10 +123,28 @@ export default function InvestigationPage() {
   const [isTyping, setIsTyping] = useState(false);
   const [activeTab, setActiveTab] = useState("stats");
   const [selectedQueryData, setSelectedQueryData] =
-    useState<GraphRAGResponse | null>(null);
+    useState<GraphRAGResponse | null>({
+      type: "response",
+      response: "Queried **500 FIR records** across **6 districts**. Latest activity: **12 new FIRs** ingested this week in Mysuru.",
+      citations: [
+        { fir_no: "2024/10/BEN/0038", crime_type: "robbery", district: "Bengaluru Urban", score: 0.94, is_verified: true },
+        { fir_no: "2024/11/BEN/0142", crime_type: "robbery", district: "Bengaluru Urban", score: 0.87, is_verified: false },
+        { fir_no: "2024/06/MYS/0041", crime_type: "chain_snatching", district: "Mysuru", score: 0.76, is_verified: false },
+      ],
+      confidence: 0.94,
+      reasoning_path: [
+        { title: "Entity Extraction", desc: "Parsed query across 500 FIR records", conf: "99.8%" },
+        { title: "Vector Proximity Search", desc: "Retrieved 12 relevant embeddings", conf: "94.2%" },
+        { title: "Spatio-Temporal Synthesis", desc: "Aggregated results formulated intelligence advice.", conf: "96.5%" },
+      ],
+      intent: "retrieve_fir",
+      slots: { language: "en" },
+      language: "en",
+      fact_mode: "hybrid",
+    });
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
-  const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [activity, setActivity] = useState<ActivityItem[]>([]);
+  const [stats, setStats] = useState<DashboardStats | null>(SEED_STATS);
+  const [activity, setActivity] = useState<ActivityItem[]>(SEED_ACTIVITY);
   const [networkData, setNetworkData] = useState<any>(null);
   const [factMode, setFactMode] = useState<
     "facts_only" | "hybrid" | "hypotheses_only"

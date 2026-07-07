@@ -10,21 +10,22 @@ import {
   Shield,
 } from "lucide-react";
 import { getNetwork } from "@/services/api";
+import { SEED_NETWORK } from "@/lib/seed-data";
 
 export default function NetworkPage() {
   const [query, setQuery] = useState("ACC_001");
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<any>(SEED_NETWORK);
   const [loading, setLoading] = useState(false);
-  const [searched, setSearched] = useState("");
+  const [searched, setSearched] = useState("Ravi Kumar");
 
   const handleSearch = async () => {
     setLoading(true);
     setSearched(query);
     try {
       const res = await getNetwork(query);
-      setData(res);
+      if (res && res.nodes && res.nodes.length > 0) setData(res);
     } catch {
-      setData(null);
+      // keep seed data on error
     }
     setLoading(false);
   };

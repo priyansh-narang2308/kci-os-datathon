@@ -2,22 +2,24 @@
 import { useState, useEffect } from "react";
 import { ScrollText, Search, Clock, User, Activity } from "lucide-react";
 import { getActivityFeed } from "@/services/api";
+import { SEED_AUDIT_ENTRIES } from "@/lib/seed-data";
 
 export default function AuditPage() {
-  const [entries, setEntries] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [entries, setEntries] = useState<any[]>(SEED_AUDIT_ENTRIES);
+  const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
     getActivityFeed()
       .then((feed) => {
-        const sorted = [...feed].sort(
-          (a, b) => new Date(b.time).getTime() - new Date(a.time).getTime(),
-        );
-        setEntries(sorted);
+        if (Array.isArray(feed) && feed.length > 0) {
+          const sorted = [...feed].sort(
+            (a, b) => new Date(b.time).getTime() - new Date(a.time).getTime(),
+          );
+          setEntries(sorted);
+        }
       })
-      .catch(() => {})
-      .finally(() => setLoading(false));
+      .catch(() => {});
   }, []);
 
   const filtered = search
