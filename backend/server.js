@@ -334,9 +334,57 @@ app.post(
   },
 );
 
-// ── In-memory cascade state for demo ──
-let cascadeLog = [];
-const FACT_STORE = new Map(); // fir_no -> { verified: boolean, verified_by: string, verified_at: string }
+// ── Kannada Translation Layer ──
+// Translates key response strings when the user selects Kannada (kn).
+// Uses bilingual template substitution — no external API required.
+function translateResponse(text, lang) {
+  if (!text || lang !== "kn") return text;
+
+  // Kannada equivalents for common English structural words used in responses
+  const termMap = [
+    [/\bNetwork Analysis\b/g, "ನೆಟ್‌ವರ್ಕ್ ವಿಶ್ಲೇಷಣೆ"],
+    [/\bExplored\b/g, "ಪರಿಶೀಲಿಸಲಾಗಿದೆ"],
+    [/\bnodes?\b/gi, "ನೋಡ್"],
+    [/\bedges?\b/gi, "ಸಂಪರ್ಕ"],
+    [/\bcentered around\b/g, "ಕೇಂದ್ರ ಘಟಕ"],
+    [/\bconnected entities\b/g, "ಸಂಬಂಧಿತ ಘಟಕಗಳು"],
+    [/\bNo direct connections found\b/g, "ನೇರ ಸಂಪರ್ಕ ಕಂಡುಬಂದಿಲ್ಲ"],
+    [/\bForecast for\b/g, "ಮುನ್ಸೂಚನೆ —"],
+    [/\bNext 7 days\b/gi, "ಮುಂದಿನ 7 ದಿನಗಳು"],
+    [/\bNext 30 days\b/gi, "ಮುಂದಿನ 30 ದಿನಗಳು"],
+    [/\bincidents\b/g, "ಪ್ರಕರಣಗಳು"],
+    [/\bModel accuracy\b/gi, "ಮಾದರಿ ನಿಖರತೆ"],
+    [/\bNo forecast model available\b/g, "ಮುನ್ಸೂಚನೆ ಮಾದರಿ ಲಭ್ಯವಿಲ್ಲ"],
+    [/\bFIR Ingestion Cascade Complete\b/g, "ಎಫ್‌ಐಆರ್ ಪ್ರವೇಶ ಪ್ರಕ್ರಿಯೆ ಪೂರ್ಣಗೊಂಡಿದೆ"],
+    [/\bNew FIR\b/g, "ಹೊಸ ಎಫ್‌ಐಆರ್"],
+    [/\bhas been ingested\b/g, "ದಾಖಲಾಗಿದೆ"],
+    [/\bstages completed successfully\b/g, "ಹಂತಗಳು ಯಶಸ್ವಿಯಾಗಿ ಪೂರ್ಣಗೊಂಡಿವೆ"],
+    [/\bFound\b/g, "ಕಂಡುಹಿಡಿಯಲಾಗಿದೆ"],
+    [/\blinked\b/g, "ಸಂಬಂಧಿತ"],
+    [/\bchain-snatching FIRs\b/gi, "ಚೈನ್ ಕಸಿ ಎಫ್‌ಐಆರ್‌ಗಳು"],
+    [/\bpotential repeat offenders\b/g, "ಸಂಭಾವ್ಯ ಪುನರಾವರ್ತಿತ ಅಪರಾಧಿಗಳು"],
+    [/\bQueried\b/g, "ಪ್ರಶ್ನಿಸಲಾಗಿದೆ"],
+    [/\bFIR records\b/g, "ಎಫ್‌ಐಆರ್ ದಾಖಲೆಗಳು"],
+    [/\bConfidence\b/g, "ವಿಶ್ವಾಸಾರ್ಹತೆ"],
+    [/\bSimilar Cases Found\b/g, "ಹೋಲುವ ಪ್ರಕರಣಗಳು ಕಂಡುಬಂದಿವೆ"],
+    [/\bpattern detected\b/gi, "ಮಾದರಿ ಪತ್ತೆಯಾಗಿದೆ"],
+    [/\bNo significant pattern\b/g, "ಗಮನಾರ್ಹ ಮಾದರಿ ಕಂಡುಬಂದಿಲ್ಲ"],
+    [/\bDistrict\b/g, "ಜಿಲ್ಲೆ"],
+    [/\bBengaluru Urban\b/g, "ಬೆಂಗಳೂರು ನಗರ"],
+    [/\bMysuru\b/g, "ಮೈಸೂರು"],
+    [/\bBelagavi\b/g, "ಬೆಳಗಾವಿ"],
+    [/\bKalaburagi\b/g, "ಕಲಬುರಗಿ"],
+    [/\bMangaluru\b/g, "ಮಂಗಳೂರು"],
+  ];
+
+  let translated = text;
+  for (const [pattern, replacement] of termMap) {
+    translated = translated.replace(pattern, replacement);
+  }
+
+  // Prepend a Kannada language header note
+  return `🇮🇳 **ಕನ್ನಡದಲ್ಲಿ ಉತ್ತರ (Kannada Response):**\n\n${translated}`;
+}
 
 app.post(
   "/api/graphrag",

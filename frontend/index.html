@@ -1,12 +1,40 @@
 <!doctype html>
-<html lang="en" translate="no">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="google" content="notranslate" />
     <link rel="icon" type="image/svg+xml"  />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KCI-OS - Karnataka Crime Intelligence Operating System</title>
+    <title>KCI-OS - Karnataka Crime Intelligence Operating System</title>
 
+    <style>
+      body { top: 0px !important; position: static !important; margin: 0 !important; }
+      iframe.goog-te-banner-frame { display: none !important; visibility: hidden !important; height: 0 !important; width: 0 !important; overflow: hidden !important; border: none !important; }
+      .skiptranslate > iframe { display: none !important; height: 0 !important; overflow: hidden !important; }
+      .goog-te-gadget-icon, #goog-gt-tt, .goog-tooltip, .goog-te-balloon-frame, .goog-te-spinner-pos { display: none !important; }
+      .goog-text-highlight { background: none !important; box-shadow: none !important; text-decoration: none !important; }
+      #google_translate_element { display: none !important; }
+      .goog-te-banner-frame, .goog-te-menu-frame { display: none !important; }
+    </style>
+    <script>
+      (function() {
+        var lang = localStorage.getItem("kci_lang");
+        if (lang === "kn") {
+          document.cookie = "googtrans=/en/kn; path=/;";
+        }
+        var target = document.querySelector("html") || document.documentElement || document.body;
+        var observer = new MutationObserver(function() {
+          var banner = document.querySelector("iframe.goog-te-banner-frame");
+          if (banner) { banner.style.display = "none"; banner.style.height = "0"; banner.style.visibility = "hidden"; }
+          var body = document.body;
+          if (body && body.style.top !== "0px") { body.style.top = "0px"; }
+          var frames = document.querySelectorAll(".skiptranslate iframe");
+          for (var i = 0; i < frames.length; i++) { frames[i].style.display = "none"; frames[i].style.height = "0"; }
+          var els = document.querySelectorAll(".goog-te-banner-frame, #goog-gt-tt");
+          for (var i = 0; i < els.length; i++) { els[i].style.display = "none"; }
+        });
+        if (target) observer.observe(document.documentElement || document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["style"] });
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
